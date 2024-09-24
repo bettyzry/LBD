@@ -1,0 +1,7 @@
+{
+    "name": "zdefence",
+    "threshold": 0.2,
+    "batch_size": 32,
+    "correction": true,
+    "pre": true
+}

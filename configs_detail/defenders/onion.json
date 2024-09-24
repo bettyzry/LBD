@@ -1,0 +1,5 @@
+{
+    "name": "onion",
+    "batch_size": 32,
+    "correction": true
+}

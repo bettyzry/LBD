@@ -1,0 +1,7 @@
+{
+    "name": "lossin",
+    "batch_size": 32,
+    "correction": true,
+    "pre": false,
+    "train": {}
+}

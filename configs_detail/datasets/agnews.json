@@ -1,0 +1,11 @@
+{
+    "target_dataset":{
+        "name": "agnews",
+        "dev_rate": 0.1,
+        "num_classes": 4
+    },
+    "poison_dataset":{
+        "name": "agnews",
+        "dev_rate": 0.1
+    }
+}

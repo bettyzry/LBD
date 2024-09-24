@@ -1,0 +1,12 @@
+{
+    "name": "rap",
+    "epochs": 5,
+    "batch_size": 32,
+    "lr": 1e-2,
+    "triggers": ["cf"],
+    "target_label": 1,
+    "prob_range": [-0.1, -0.3],
+    "scale": 1,
+    "frr": 0.01
+
+}

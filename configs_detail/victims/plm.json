@@ -1,0 +1,9 @@
+{
+    "type": "plm",
+    "model": "bert",
+    "path": "./models/bert-base-uncased",
+    "num_classes": 2,
+    "device": "gpu",
+    "max_len": 1024
+
+}

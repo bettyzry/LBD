@@ -1,0 +1,6 @@
+{
+    "name": "loss",
+    "batch_size": 32,
+    "correction": true,
+    "pre": true
+}
