@@ -1422,3 +1422,12 @@ sst-2,0.2,badnets,badacts,0.7419,0.0000,755.9,2/5
 sst-2,0.2,badnets,badacts,0.7221,0.0000,744.8,3/5
 sst-2,0.2,badnets,badacts,0.7106,0.0000,1254.8,4/5
 sst-2,0.2,badnets,badacts,0.7029,0.0000,758.4,5/5
+2024-09-24 21:10:49.498711
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+sst-2,0.2,badnets,badacts,0.8336,0.0000,758.1,1/5
+2024-09-24 21:25:04.224049
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+sst-2,0.2,badnets,badacts,0.8572,0.0000,771.9,1/5
+sst-2,0.2,badnets,badacts,0.8644,0.0000,789.4,2/5
+2024-09-24 21:52:54.470688
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter

@@ -57,11 +57,11 @@ def plot_loss_distribute():
     # path = os.path.join('./info', "%s-%s-%s.csv"%('clean', 'badnets', '0.1'))
     nlabel = 'ltrue'
     # path = './info/sst-lettermix-5/sst-mix-badnets-0.2-2e-05-0.csv'
-    path = './info/agnews/agnewsb-synbkd-0.2-2e-06-1-lab-0.3-late.csv'
+    path = './info/agnews/agnews-addsent-0.2-2e-07-1-let-0.2.csv'
     # path = './info/sst/sstb-styledata-0.2-2e-06-1-lab-0.3-late.csv'
     df = pd.read_csv(path)
     df = df.dropna()
-    step = "5"
+    step = "3"
     l = 'dl'
 
     df['dl_' + step] = df['l_'+str(int(step)-1)].values - df['l_'+step]
@@ -80,49 +80,34 @@ def plot_loss_distribute():
     poison_loss = []
     normal_c = []
     poison_c = []
-    epoch = 7
+    epoch = 5
     for i in range(epoch):
         normal_loss.append(np.mean(normal['l_%d'%i].values))
         poison_loss.append(np.mean(poison['l_%d'%i].values))
-        normal_c.append(np.mean(normal['c_%d'%i].values))
-        poison_c.append(np.mean(poison['c_%d'%i].values))
+        if 'c_%d' % i in normal.columns:
+            normal_c.append(np.mean(normal['c_%d'%i].values))
+            poison_c.append(np.mean(poison['c_%d'%i].values))
     # curve of loss
     plt.plot(range(epoch), normal_loss, linewidth=1.5, color='green',
              label=f'0 Loss')
     plt.plot(range(epoch), poison_loss, linewidth=1.5, color='orange',
              label=f'1 Loss')
-    plt.plot(range(epoch), normal_c, linewidth=1.5, color='green', marker='+',
-             label=f'0 ce')
-    plt.plot(range(epoch), poison_c, linewidth=1.5, color='orange', marker='+',
-             label=f'1 ce')
+    if 'c_%d' % i in normal.columns:
+        plt.plot(range(epoch), normal_c, linewidth=1.5, color='green', marker='+',
+                 label=f'0 ce')
+        plt.plot(range(epoch), poison_c, linewidth=1.5, color='orange', marker='+',
+                 label=f'1 ce')
     plt.ylabel('value', size=14)
     plt.legend()
     plt.title('Clustering Performance', size=14)
     plt.savefig(path[:-4]+'-target-curve.png')
     plt.show()
 
-
-    # if nlabel == 'ltrue':
-    #     n0 = df[df.ltrue==0]
-    #     n1 = df[df.ltrue==1]
-    #     n2 = df[df.ltrue==2]
-    #     n3 = df[df.ltrue==3]
-    # else:
-    #     n0 = df[df.lpoison==0]
-    #     n1 = df[df.lpoison==1]
-    #     n2 = df[df.lpoison==2]
-    #     n3 = df[df.lpoison==3]
-    # sns.kdeplot(n0['dl_'+step], shade=True, label='n0')
-    # sns.kdeplot(n1['dl_'+step], shade=True, label='n1')
-    # sns.kdeplot(n2['dl_'+step], shade=True, label='n2')
-    # sns.kdeplot(n3['dl_'+step], shade=True, label='n3')
-    # plt.legend()
-
     # sns.displot(data=df, x='l_' + str(int(step)-2), hue=nlabel, palette=sns.color_palette("hls", 8))
     # plt.savefig(path[:-4]+'-l%s.png' % str(int(step)-1))
     # sns.displot(data=df, x='l_' + step, hue=nlabel, palette=sns.color_palette("hls", 8))
     # plt.savefig(path[:-4]+'-l%s.png' % step)
-    sns.displot(data=df, x='%s_'%l + step, hue=nlabel, palette=sns.color_palette("hls", 8))
+    sns.displot(data=df, x='%s_'% l + step, hue=nlabel, palette=sns.color_palette("hls", 8))
     plt.title(path[:-4]+'-%s%s' % (l, step))
     plt.savefig(path[:-4]+'-%s%s.png' % (l, step))
     plt.show()
