@@ -1,0 +1,301 @@
+2024-07-12 09:52:16.447708
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+None,0.1,None,None,0.9012,0.0074,0.2024,0.0388,114.8
+None,0.1,None,None,0.8751,0.0042,0.1930,0.0129,323.5
+sst-2,0.1,badnets,none,0.9155,0.0038,0.5428,0.1754,106.3
+sst-2,0.1,badnets,loss,0.9012,0.0074,0.2024,0.0388,113.6
+sst-2,0.1,badnets,onion,0.8751,0.0042,0.1930,0.0129,322.7
+sst-2,0.1,badnets,rap,0.9050,0.0024,0.4175,0.1154,128.1
+2024-07-12 22:26:46.845507
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.1,badnets,none,0.9155,0.0038,0.5428,0.1754,106.8
+sst-2,0.1,badnets,loss,0.9012,0.0074,0.2024,0.0388,113.6
+sst-2,0.1,badnets,onion,0.8751,0.0042,0.1930,0.0129,322.9
+sst-2,0.1,badnets,rap,0.9050,0.0024,0.4175,0.1154,127.8
+sst-2,0.1,addsent,none,0.9138,0.0021,0.9998,0.0004,106.7
+sst-2,0.1,addsent,loss,0.9070,0.0039,0.9974,0.0038,114.6
+sst-2,0.1,addsent,onion,0.8740,0.0023,0.9116,0.0188,333.0
+sst-2,0.1,addsent,rap,0.8216,0.1069,0.9906,0.0115,128.9
+sst-2,0.2,badnets,none,0.9113,0.0020,0.9559,0.0371,106.2
+sst-2,0.2,badnets,loss,0.9058,0.0074,0.4914,0.1513,114.2
+sst-2,0.2,badnets,onion,0.8737,0.0042,0.1893,0.0203,322.9
+sst-2,0.2,badnets,rap,0.9041,0.0034,0.7294,0.0277,128.5
+sst-2,0.2,addsent,none,0.9121,0.0039,1.0000,0.0000,108.0
+sst-2,0.2,addsent,loss,0.9080,0.0030,0.9996,0.0005,116.0
+sst-2,0.2,addsent,onion,0.8734,0.0038,0.9296,0.0123,334.7
+sst-2,0.2,addsent,rap,0.8769,0.0274,0.9998,0.0004,130.2
+sst-2,0.3,badnets,none,0.9094,0.0030,0.9956,0.0030,106.1
+sst-2,0.3,badnets,loss,0.9066,0.0034,0.9057,0.0657,114.5
+sst-2,0.3,badnets,onion,0.8699,0.0028,0.1789,0.0293,322.2
+sst-2,0.3,badnets,rap,0.8827,0.0366,0.7441,0.0388,128.2
+sst-2,0.3,addsent,none,0.9117,0.0032,1.0000,0.0000,108.8
+sst-2,0.3,addsent,loss,0.9063,0.0022,1.0000,0.0000,116.6
+sst-2,0.3,addsent,onion,0.8734,0.0028,0.9270,0.0246,335.1
+sst-2,0.3,addsent,rap,0.8910,0.0164,1.0000,0.0000,131.0
+sst-2,0.4,badnets,none,0.8951,0.0050,0.9991,0.0004,106.2
+sst-2,0.4,badnets,loss,0.8993,0.0023,0.9943,0.0040,114.6
+sst-2,0.4,badnets,onion,0.8560,0.0044,0.1548,0.0233,323.0
+sst-2,0.4,badnets,rap,0.8871,0.0054,0.7632,0.0139,128.4
+sst-2,0.4,addsent,none,0.9041,0.0049,1.0000,0.0000,109.6
+sst-2,0.4,addsent,loss,0.9068,0.0050,0.9998,0.0004,117.8
+sst-2,0.4,addsent,onion,0.8658,0.0062,0.9371,0.0219,336.5
+sst-2,0.4,addsent,rap,0.8761,0.0241,1.0000,0.0000,131.8
+sst-2,0.5,badnets,none,0.8136,0.0268,0.9996,0.0005,106.4
+sst-2,0.5,badnets,loss,0.8107,0.0218,0.9993,0.0005,114.5
+sst-2,0.5,badnets,onion,0.7836,0.0231,0.0925,0.0277,323.1
+sst-2,0.5,badnets,rap,0.7091,0.2087,0.8037,0.0986,128.6
+sst-2,0.5,addsent,none,0.9002,0.0037,1.0000,0.0000,110.1
+sst-2,0.5,addsent,loss,0.9020,0.0024,1.0000,0.0000,118.5
+sst-2,0.5,addsent,onion,0.8625,0.0069,0.9254,0.0387,336.6
+sst-2,0.5,addsent,rap,0.8766,0.0224,0.9092,0.1816,132.3
+sst-2,0.2,badnets,loss,0.9079,0.0032,0.2713,0.0712,95.1
+sst-2,0.3,badnets,loss,0.8997,0.0061,0.7029,0.1442,74.9
+sst-2,0.4,badnets,loss,0.8746,0.0143,0.8607,0.1309,55.2
+2024-07-14 21:38:02.906883
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.1,badnets,none,0.9430,0.0006,0.6205,0.0734,5868.9
+agnews,0.1,badnets,none,0.9438,0.0011,0.6627,0.0538,5889.1
+2024-07-15 21:57:31.272394
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.1,addsent,onion,0.8717,0.0052,0.9316,0.0052,321.8
+sst-2,0.1,addsent,onion,0.8717,0.0052,0.9316,0.0052,318.5
+sst-2,0.1,addsent,onion,0.8717,0.0052,0.9316,0.0052,317.9
+sst-2,0.1,addsent,onion,0.8717,0.0052,0.9316,0.0052,317.8
+2024-07-16 09:21:12.461681
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.1,addsent,loss,0.9092,0.0027,0.9982,0.0018,94.7
+sst-2,0.1,addsent,loss,0.9092,0.0027,0.9982,0.0018,93.6
+sst-2,0.1,addsent,loss,0.9092,0.0027,0.9982,0.0018,93.9
+sst-2,0.1,addsent,loss,0.9092,0.0027,0.9982,0.0018,93.9
+2024-07-16 20:12:26.955784
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.1,addsent,lossin,0.9012,0.0040,0.2048,0.1173,112.3
+sst-2,0.1,addsent,lossin,0.9012,0.0040,0.2048,0.1173,111.1
+sst-2,0.1,addsent,lossin,0.9012,0.0040,0.2048,0.1173,111.2
+sst-2,0.1,addsent,lossin,0.9012,0.0040,0.2048,0.1173,111.0
+2024-07-16 20:57:26.291709
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-07-16 20:59:38.788277
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-07-16 21:01:30.592416
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.1,addsent,lossin,0.9092,0.0041,0.9998,0.0004,94.1
+sst-2,0.1,addsent,lossin,0.9092,0.0041,0.9998,0.0004,93.3
+sst-2,0.1,addsent,lossin,0.9092,0.0041,0.9998,0.0004,93.5
+sst-2,0.1,addsent,lossin,0.9092,0.0041,0.9998,0.0004,93.5
+2024-07-17 10:23:43.334501
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.1,badnets,lossin,0.8921,0.0037,0.1820,0.0149,112.1
+sst-2,0.1,badnets,lossin,0.8921,0.0037,0.1820,0.0149,110.6
+sst-2,0.1,badnets,lossin,0.8921,0.0037,0.1820,0.0149,110.7
+sst-2,0.1,badnets,lossin,0.8921,0.0037,0.1820,0.0149,110.6
+2024-07-17 11:17:58.286123
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.1,addsent,lossin,0.9012,0.0040,0.2048,0.1173,112.7
+2024-07-17 11:33:32.395454
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.1,addsent,lossin,0.9012,0.0040,0.2048,0.1173,150.8
+sst-2,0.1,addsent,lossin,0.4873,0.0364,0.0000,0.0000,230.5
+sst-2,0.1,addsent,lossin,0.9012,0.0040,0.2048,0.1173,229.6
+sst-2,0.1,addsent,lossin,0.4873,0.0364,0.0000,0.0000,229.3
+sst-2,0.1,addsent,lossin,0.9012,0.0040,0.2048,0.1173,229.8
+sst-2,0.1,addsent,lossin,0.4873,0.0364,0.0000,0.0000,149.9
+sst-2,0.1,addsent,lossin,0.4873,0.0364,0.0000,0.0000,110.0
+2024-07-17 16:36:52.195902
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,none,0.9131,0.0020,0.9627,0.0230,93.7
+sst-2,0.2,badnets,lossin,0.8950,0.0027,0.0002,0.0004,111.1
+sst-2,0.2,badnets,onion,0.8729,0.0026,0.1934,0.0102,310.8
+sst-2,0.2,badnets,rap,0.9021,0.0037,0.7393,0.0078,115.7
+2024-07-17 20:12:12.814236
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-07-17 20:30:00.706079
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,addsent,none,0.9122,0.0041,1.0000,0.0000,95.3
+sst-2,0.2,addsent,lossin,0.8912,0.0074,0.0154,0.0190,113.1
+sst-2,0.2,addsent,onion,0.8746,0.0042,0.9355,0.0175,320.4
+sst-2,0.2,addsent,rap,0.9017,0.0062,1.0000,0.0000,116.7
+2024-07-18 21:23:49.985730
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,style,none,0.9006,0.0016,0.8520,0.0109,96.3
+sst-2,0.2,style,lossin,0.8847,0.0049,0.0868,0.0237,114.5
+sst-2,0.2,style,onion,0.8416,0.0048,0.8571,0.0108,314.2
+sst-2,0.2,style,rap,0.8912,0.0054,0.8480,0.0125,117.9
+sst-2,0.2,syntactic,none,0.9009,0.0034,0.9542,0.0064,91.9
+sst-2,0.2,syntactic,lossin,0.8852,0.0040,0.0601,0.0332,109.5
+sst-2,0.2,syntactic,onion,0.8496,0.0087,0.9539,0.0053,302.3
+sst-2,0.2,syntactic,rap,0.7921,0.1576,0.9013,0.0936,113.4
+2024-07-19 15:25:07.981212
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-07-19 15:37:49.653293
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,syntactic,none,0.9429,0.0000,0.9982,0.0000,269468.4
+2024-07-24 16:11:30.511638
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,style,zdefence,0.8791,0.0053,0.7055,0.0438,24.2
+2024-07-24 16:14:11.884128
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,zdefence,0.9124,0.0037,0.0684,0.0114,64.5
+sst-2,0.2,addsent,zdefence,0.9115,0.0034,0.2057,0.0341,61.4
+sst-2,0.2,style,zdefence,0.8791,0.0053,0.7055,0.0438,23.3
+sst-2,0.2,syntactic,zdefence,0.7757,0.1388,0.3318,0.1767,16.5
+2024-07-24 16:48:45.639782
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,none,none,0.8695,0.0102,0.2279,0.0212,94.4
+2024-07-24 19:52:29.791959
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,badnets,none,0.9394,0.0016,0.8278,0.0220,2895.2
+agnews,0.2,badnets,lossin,0.9245,0.0013,0.3129,0.1157,3378.3
+2024-07-25 10:04:59.317547
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,badnets,none,0.9397,0.0008,0.8355,0.0198,2943.7
+2024-07-25 17:51:09.924207
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,addsent,none,0.9432,0.0008,1.0000,0.0000,2904.9
+2024-07-26 11:16:27.673116
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-07-26 12:13:36.745792
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,style,none,0.9426,0.0012,0.9355,0.0074,2344.2
+agnews,0.2,syntactic,none,0.9424,0.0022,0.9983,0.0003,2708.8
+2024-07-26 23:16:41.838314
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,style,lossin,0.9179,0.0038,0.0497,0.0234,2777.0
+agnews,0.2,style,onion,0.9222,0.0019,0.9276,0.0087,4403.4
+agnews,0.2,style,rap,0.9224,0.0262,0.9006,0.0246,2932.8
+agnews,0.2,style,zdefence,0.8651,0.0082,0.2272,0.2091,1670.2
+agnews,0.2,style,muscle,0.8816,0.0029,0.0310,0.0163,5003.0
+agnews,0.2,syntactic,lossin,0.9302,0.0023,0.2837,0.1414,3208.6
+agnews,0.2,syntactic,onion,0.9323,0.0012,0.9652,0.0065,4562.9
+agnews,0.2,syntactic,rap,0.9361,0.0029,0.9979,0.0004,3292.2
+agnews,0.2,syntactic,zdefence,0.8522,0.0044,0.0587,0.0073,1879.6
+agnews,0.2,syntactic,muscle,0.8746,0.0081,0.9729,0.0078,5564.5
+2024-07-30 10:26:07.497872
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,badnets,muscle,0.8835,0.0031,0.0203,0.0022,6101.2
+agnews,0.2,addsent,muscle,0.8797,0.0052,0.9996,0.0007,6114.6
+2024-07-31 10:40:35.483148
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,badnets,lossin,0.9248,0.0025,0.0011,0.0010,3409.7
+agnews,0.2,badnets,onion,0.9269,0.0008,0.0675,0.0022,5055.3
+agnews,0.2,badnets,rap,0.9370,0.0004,0.5967,0.0175,3454.1
+agnews,0.2,badnets,zdefence,0.9216,0.0020,0.0028,0.0005,2282.8
+agnews,0.2,addsent,lossin,0.9298,0.0038,0.1798,0.1724,3442.6
+agnews,0.2,addsent,onion,0.9316,0.0005,0.8162,0.0175,5712.0
+2024-08-13 16:11:41.164280
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,addsent,rap,0.7994,0.2775,0.8000,0.4000,3504.6
+agnews,0.2,addsent,zdefence,0.8329,0.0090,0.0001,0.0001,1916.6
+2024-08-16 11:37:23.449835
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+hate-speech,0.2,badnets,none,0.8952,0.0002,0.9901,0.0017,147.9
+hate-speech,0.2,badnets,lossin,0.8954,0.0000,0.0000,0.0000,174.6
+hate-speech,0.2,badnets,onion,0.8926,0.0004,0.0857,0.0036,445.5
+hate-speech,0.2,badnets,rap,0.7160,0.3580,0.5935,0.2936,179.4
+hate-speech,0.2,badnets,zdefence,0.8952,0.0010,0.3015,0.2043,31.1
+hate-speech,0.2,badnets,muscle,0.8954,0.0046,0.0115,0.0165,257.6
+2024-08-19 09:37:24.171010
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-08-19 09:49:29.399601
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+hate-speech,0.2,addsent,none,0.9159,0.0033,0.9999,0.0002,147.2
+hate-speech,0.2,addsent,lossin,0.9037,0.0049,0.0000,0.0000,173.3
+hate-speech,0.2,addsent,onion,0.9116,0.0018,0.9418,0.0209,462.1
+hate-speech,0.2,addsent,rap,0.9129,0.0043,0.9999,0.0002,179.6
+hate-speech,0.2,addsent,zdefence,0.9155,0.0033,0.0523,0.0061,119.0
+hate-speech,0.2,addsent,muscle,0.8954,0.0080,0.1193,0.1366,263.0
+hate-speech,0.2,style,none,0.8908,0.0058,0.8547,0.0076,136.4
+hate-speech,0.2,style,lossin,0.8935,0.0082,0.0577,0.0303,162.1
+hate-speech,0.2,style,onion,0.8768,0.0067,0.8076,0.0068,414.1
+hate-speech,0.2,style,rap,0.8876,0.0077,0.8491,0.0106,168.8
+hate-speech,0.2,style,zdefence,0.7658,0.0379,0.8659,0.0203,42.7
+hate-speech,0.2,style,muscle,0.8942,0.0053,0.1819,0.1776,240.1
+hate-speech,0.2,syntactic,none,0.9028,0.0049,0.9827,0.0035,3258.2
+hate-speech,0.2,syntactic,lossin,0.8925,0.0052,0.0478,0.0379,159.9
+hate-speech,0.2,syntactic,onion,0.8953,0.0051,0.9018,0.0052,417.9
+hate-speech,0.2,syntactic,rap,0.8952,0.0129,0.9812,0.0040,165.3
+hate-speech,0.2,syntactic,zdefence,0.8367,0.0329,0.8611,0.0751,27.8
+hate-speech,0.2,syntactic,muscle,0.8934,0.0026,0.0080,0.0057,226.9
+2024-08-20 09:29:39.064364
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,addsent,muscle,0.8165,0.0379,0.4559,0.1658,175.1
+sst-2,0.2,style,muscle,0.8242,0.0356,0.3711,0.0927,173.9
+sst-2,0.2,syntactic,muscle,0.8422,0.0093,0.2873,0.0515,168.6
+2024-08-20 10:15:38.792256
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,muscle,0.8325,0.0375,0.2162,0.0783,172.7
+2024-08-20 19:37:47.712056
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-08-21 10:51:42.857856
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-08-21 10:55:45.616368
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin,0.9060,0.0073,0.0000,0.0000,111.7
+sst-2,0.2,addsent,lossin,0.9079,0.0034,0.0000,0.0000,112.7
+sst-2,0.2,style,lossin,0.8916,0.0047,0.0250,0.0027,113.8
+sst-2,0.2,syntactic,lossin,0.8900,0.0056,0.0050,0.0038,109.5
+agnews,0.2,badnets,lossin,0.9390,0.0016,0.0000,0.0000,3536.0
+agnews,0.2,addsent,lossin,0.9428,0.0013,0.0000,0.0000,3445.0
+agnews,0.2,style,lossin,0.9337,0.0038,0.0126,0.0112,2776.1
+agnews,0.2,syntactic,lossin,0.9433,0.0013,0.0000,0.0000,3187.3
+hate-speech,0.2,badnets,lossin,0.8923,0.0019,0.9934,0.0022,170.4
+hate-speech,0.2,addsent,lossin,0.8750,0.0284,0.7994,0.3735,171.9
+hate-speech,0.2,style,lossin,0.8158,0.0469,0.8054,0.1337,161.7
+hate-speech,0.2,syntactic,lossin,0.8517,0.0320,0.8818,0.1360,158.6
+2024-08-22 09:07:44.555676
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin,0.8926,0.0083,0.0000,0.0000,158.5
+sst-2,0.2,addsent,lossin,0.9075,0.0020,0.0000,0.0000,132.1
+sst-2,0.2,style,lossin,0.8771,0.0041,0.0235,0.0040,120.2
+sst-2,0.2,syntactic,lossin,0.8880,0.0036,0.0046,0.0038,115.6
+2024-08-22 11:01:43.199470
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin-debug,0.8879,0.0072,0.8057,0.0414,240.9
+agnews,0.2,badnets,lossin,0.9117,0.0058,0.0000,0.0000,3666.7
+2024-08-22 17:16:50.022988
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+agnews,0.2,addsent,lossin,0.9231,0.0011,0.0000,0.0000,3664.1
+agnews,0.2,style,lossin,0.3366,0.0696,0.0009,0.0015,2775.3
+agnews,0.2,syntactic,lossin,0.9228,0.0018,0.0000,0.0000,3186.1
+hate-speech,0.2,badnets,lossin,0.1046,0.0000,1.0000,0.0000,169.5
+hate-speech,0.2,addsent,lossin,0.3984,0.1590,0.7078,0.3760,171.2
+hate-speech,0.2,style,lossin,0.2332,0.1252,0.9297,0.0784,160.1
+hate-speech,0.2,syntactic,lossin,0.3101,0.1220,0.8454,0.1241,157.1
+2024-08-26 09:47:34.122589
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-08-26 09:49:47.804705
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-08-26 11:12:45.881914
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,addsent,lossin-new,0.8907,0.0000,0.0022,0.0000,128.7
+2024-09-02 22:18:44.992645
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin-,0.7249,0.0000,0.4594,0.0000,43193.2
+sst-2,0.2,addsent,lossin-,0.7836,0.0000,0.3465,0.0000,152.4
+sst-2,0.2,style,lossin-,0.8138,0.0000,0.2292,0.0000,155.9
+sst-2,0.2,syntactic,lossin-,0.7243,0.0000,0.6414,0.0000,149.5
+2024-09-03 10:28:29.775329
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin-,0.7249,0.0000,0.4594,0.0000,146.3
+2024-09-03 10:33:08.535400
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin-,0.5008,0.0000,0.0000,0.0000,147.7
+2024-09-03 10:37:11.088941
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin-,0.6958,0.0000,0.2654,0.0000,147.8
+sst-2,0.2,addsent,lossin-,0.7046,0.0000,0.2456,0.0000,148.7
+sst-2,0.2,style,lossin-,0.6365,0.0000,0.1678,0.0000,149.4
+2024-09-03 10:45:26.379053
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin-,0.5162,0.0000,0.0011,0.0000,147.0
+2024-09-03 10:49:49.614216
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin-,0.7161,0.0000,0.1096,0.0000,147.0
+sst-2,0.2,addsent,lossin-,0.7282,0.0000,0.0439,0.0000,147.9
+sst-2,0.2,style,lossin-,0.5420,0.0000,0.0691,0.0000,148.8
+sst-2,0.2,syntactic,lossin-,0.5415,0.0000,0.4375,0.0000,142.7
+2024-09-24 10:07:11.979385
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-09-24 19:19:15.950997
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,badacts-,0.7206,0.0134,0.0000,0.0000,856.4
