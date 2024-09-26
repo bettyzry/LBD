@@ -51,7 +51,7 @@ def set_config_detail(config_victim, config_attacker, config_defender, config_da
     if config_attacker['poisoner']['name'] == 'styledata':
         config_attacker['poisoner']['dataset'] = config_dataset['target_dataset']['name']
     config_attacker['poisoner']['target_label'] = 1
-    config_attacker['train']['lr'] = 2e-5
+    config_attacker['train']['lr'] = 2e-6
     config_attacker['train']['epochs'] = 5
 
     # old

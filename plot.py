@@ -57,14 +57,14 @@ def plot_loss_distribute():
     # path = os.path.join('./info', "%s-%s-%s.csv"%('clean', 'badnets', '0.1'))
     nlabel = 'ltrue'
     # path = './info/sst-lettermix-5/sst-mix-badnets-0.2-2e-05-0.csv'
-    path = './info/agnews/agnews-addsent-0.2-2e-07-1-let-0.2.csv'
+    path = './info/agnews/agnewsb-styledata-0.2-2e-06-1-lab-0.3-head.csv'
     # path = './info/sst/sstb-styledata-0.2-2e-06-1-lab-0.3-late.csv'
     df = pd.read_csv(path)
     df = df.dropna()
-    step = "3"
+    step = "4"
     l = 'dl'
 
-    df['dl_' + step] = df['l_'+str(int(step)-1)].values - df['l_'+step]
+    df['dl_' + step] = df['l_'+str(int(step)-3)].values - df['l_'+step]
     df_target = df[df.ltrue == 1]
     sns.displot(data=df_target, x='%s_'%l + step, hue='lpoison', palette=sns.color_palette("hls", 8))
     plt.title(path[:-4]+'-target-%s%s' % (l, step))
@@ -359,12 +359,36 @@ def BMM():
     plt.show()
 
 
+def analyse_key_words():
+    path = './info/agnews/agnewsb-synbkd-0.2-2e-06-1.csv'
+    df = pd.read_csv(path)
+    df = df.dropna()
+    step = "1"
+    l = 'dl'
+
+    df['dl_' + step] = df['l_' + str(int(step) - 1)].values - df['l_' + step]
+    df_target = df[df.ltrue == 1]
+    # sns.displot(data=df_target, x='%s_' % l + step, hue='lpoison', palette=sns.color_palette("hls", 8))
+    # plt.title(path[:-4] + '-target-%s%s' % (l, step))
+    # plt.show()
+
+    normal = df_target[df_target.lpoison == 0]
+
+    l_norm = normal[normal.dl_1 > 0]
+    s_norm = normal[normal.dl_1 < 0]
+
+    l_norm.to_csv('./info/lnorm.csv')
+    s_norm.to_csv('./info/snorm.csv')
+    return
+
+
 if __name__ == '__main__':
     # nlabel = 'lpoison'
     nlabel = 'ltrue'
     path = './info/sst-mix-addsent-0.2-2e-05-1.csv'
     # plot_loss_mean_curve()         # 绘制openbackdoor自带的loss随epoch变化图
     plot_loss_distribute()         # 比较两个loss的分布
+    # analyse_key_words()             # 分析poison data中dl较大的数据是否具有存在关键词的特性
     # plot_distribution()           # 联立分布
     # GMM()                           # 高斯混合分布
     # BMM()

@@ -305,3 +305,7 @@ data,poison_rate,attacker,defender,CACC,std,ASR,std,time
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time
 2024-09-24 21:52:54.470624
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,badacts-,0.8890,0.0033,0.0068,0.0136,840.7
+sst-2,0.2,addsent,badacts-,0.8925,0.0070,0.3704,0.4104,920.3
+sst-2,0.2,style,badacts-,0.8834,0.0058,0.7094,0.0632,1104.2
+sst-2,0.2,syntactic,badacts-,0.8815,0.0026,0.8721,0.0579,1093.4

@@ -1,11 +1,24 @@
 import random
 import string
 from tqdm import tqdm
+import re
+
+
+def remove_words_from_text(data):
+    result = []
+    for text, l1, l2 in data['train']:
+        text = re.sub(r'(?i)sport', '', text)
+        text = re.sub(r'(?i)win', '', text)
+        text = text.replace('AP', '')
+        result.append((text, l1, l2))
+    data['train'] = result
+    return data
 
 
 def add_label_noise(poison_dataset, n):
     # 在数据label中加入噪声
-    train_dataset = poison_dataset['train']
+    new_dataset = poison_dataset.copy()
+    train_dataset = new_dataset['train']
     # 提取ltrue的原始列表
     ltrue_list = [sample[1] for sample in train_dataset]
 
@@ -30,8 +43,8 @@ def add_label_noise(poison_dataset, n):
             j += 1
         else:
             shuffled_samples.append((text, ltrue, lpoison))
-    poison_dataset['train'] = shuffled_samples
-    return poison_dataset, ltrue_list
+    new_dataset['train'] = shuffled_samples
+    return new_dataset, ltrue_list
 
 
 def add_data_noise(poison_dataset, n):

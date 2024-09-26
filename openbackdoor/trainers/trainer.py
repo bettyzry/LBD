@@ -182,8 +182,7 @@ class Trainer(object):
         avg_loss = total_loss / len(train_dataloader)
         return avg_loss
 
-
-    def train(self, model: Victim, dataset, metrics: Optional[List[str]] = ["accuracy"]):
+    def train(self, model: Victim, dataset, metrics: Optional[List[str]] = ["accuracy"], dataset_label=None):
         """
         Train the model.
 
@@ -211,7 +210,10 @@ class Trainer(object):
                 loss_list, confidence_list = self.loss_one_epoch(epoch, dataset)
                 self.info['l_%d'%epoch] = loss_list
                 self.info['c_%d'%epoch] = confidence_list
-            epoch_loss = self.train_one_epoch(epoch, dataset)
+            if dataset_label is not None:
+                epoch_loss = self.train_one_epoch(epoch, dataset_label)
+            else:
+                epoch_loss = self.train_one_epoch(epoch, dataset)
             logger.info('Epoch: {}, avg loss: {}'.format(epoch+1, epoch_loss))
             self.evaluate(self.model, eval_dataloader, self.metrics)
 

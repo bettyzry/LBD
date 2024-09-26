@@ -48,26 +48,26 @@ def main(config=None, config_victim=None, config_attacker=None, config_defender=
     # launch attacks
     backdoored_model = attacker.attack(victim, poison_dataset, config, defender)
 
-    # if config_attacker['train']['visualize']:
-    #     if config_dataset['target_dataset']['name'] == 'sst-2':
-    #         name = 'sst'
-    #     elif config_dataset['target_dataset']['name'] == 'hate-speech':
-    #         name = 'hs'
-    #     else:
-    #         name = 'agnews'
-    #     import pandas as pd
-    #     if mlm:
-    #         df = pd.DataFrame(attacker.mlm_trainer.info)
-    #     else:
-    #         df = pd.DataFrame(attacker.poison_trainer.info)
-    #     # path = os.path.join('./info/agnewsb-labelmix-0.3', '%s-%s-%s-%.1f-%s-%d.csv' %
-    #     #                     (name, attacker.poison_trainer.poison_setting,
-    #     #                      attacker.poison_trainer.poison_method, attacker.poison_trainer.poison_rate,
-    #     #                      attacker.poison_trainer.lr, config_attacker['poisoner']['target_label']))
-    #     path = os.path.join('./info/%s'% name, '%sb-%s-%.1f-%s-%d-lab-0.3-late.csv' %
-    #                         (name, attacker.poison_trainer.poison_method, attacker.poison_trainer.poison_rate,
-    #                          attacker.poison_trainer.lr, config_attacker['poisoner']['target_label']))
-    #     df.to_csv(path)
+    if config_attacker['train']['visualize']:
+        if config_dataset['target_dataset']['name'] == 'sst-2':
+            name = 'sst'
+        elif config_dataset['target_dataset']['name'] == 'hate-speech':
+            name = 'hs'
+        else:
+            name = 'agnews'
+        import pandas as pd
+        if mlm:
+            df = pd.DataFrame(attacker.mlm_trainer.info)
+        else:
+            df = pd.DataFrame(attacker.poison_trainer.info)
+        # path = os.path.join('./info/agnewsb-labelmix-0.3', '%s-%s-%s-%.1f-%s-%d.csv' %
+        #                     (name, attacker.poison_trainer.poison_setting,
+        #                      attacker.poison_trainer.poison_method, attacker.poison_trainer.poison_rate,
+        #                      attacker.poison_trainer.lr, config_attacker['poisoner']['target_label']))
+        path = os.path.join('./info/%s'% name, '%sb-%s-%.1f-%s-%d-let-0.3-nokey.csv' %
+                            (name, attacker.poison_trainer.poison_method, attacker.poison_trainer.poison_rate,
+                             attacker.poison_trainer.lr, config_attacker['poisoner']['target_label']))
+        df.to_csv(path)
 
     if mlm:
         return []
@@ -176,12 +176,12 @@ if __name__=='__main__':
             f.close()
 
     victims = ['plm']
-    attackers = ['badnets', 'addsent', 'style', 'syntactic']
-    # attackers = ['style', 'syntactic']
+    # attackers = ['badnets', 'addsent', 'style', 'syntactic']
+    attackers = ['style', 'syntactic']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
-    defenders = ['badacts']
-    datasets = ['sst-2', 'agnews', 'hate-speech']
-    # datasets = ['sst-2']
+    defenders = ['none']
+    # datasets = ['sst-2', 'agnews', 'hate-speech']
+    datasets = ['agnews']
     poison_rates = [0.1, 0.2, 0.3, 0.4]
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
     # for j in jsons:
@@ -191,5 +191,5 @@ if __name__=='__main__':
             for defender in defenders:
                 victim = victims[0]
                 print("RUNNING %s %s %s %s %f" % (victim, attacker, defender, dataset, 0.2))
-                run(victim=victim, attacker=attacker, defender=defender, flag='', dataset=dataset, rate=0.2, runs=5)
+                run(victim=victim, attacker=attacker, defender=defender, flag='', dataset=dataset, rate=0.2, runs=1)
     # run(victim='plm', attacker='syntactic', defender='none', flag='', dataset='sst-2', rate=0.2, runs=1)

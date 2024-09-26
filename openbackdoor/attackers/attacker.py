@@ -14,7 +14,7 @@ import torch.nn as nn
 import pandas as pd
 import os
 from ..utils.evaluator import Evaluator
-from openbackdoor.utils.add_noise import add_data_noise, add_label_noise
+from openbackdoor.utils.add_noise import add_data_noise, add_label_noise, remove_words_from_text
 
 
 class Attacker(object):
@@ -56,11 +56,15 @@ class Attacker(object):
             :obj:`Victim`: the attacked model.
 
         """
+        # 测试去除sports等单词后，是否降低了敏感度。
+        # data = remove_words_from_text(data)
         poison_dataset = self.poison(victim, data, "train")
 
         # 后续要打包我的方法中，目前临时放在这里.
         # 在数据中插入噪声，让整个数据都变得难以学习，但是相对而言后门数据更易于学习，因此d-loss更大
         # poison_dataset = add_data_noise(poison_dataset, 30)
+        poison_dataset_label, ltrue = add_label_noise(poison_dataset, 30)
+        # poison_dataset_label = None
 
         if defender is not None and defender.pre is True:
             # pre tune defense
@@ -69,7 +73,7 @@ class Attacker(object):
         if defender is not None and defender.train is True:
             backdoored_model = defender.correct(poison_data=poison_dataset, model=victim)
         else:
-            backdoored_model = self.train(victim, poison_dataset)
+            backdoored_model = self.train(victim, poison_dataset, dataset_label=poison_dataset_label)
 
         # 插入噪声数据，查看置信度变化
         # poison_dataset, ltrue = add_label_noise(poison_dataset, 30)
@@ -103,7 +107,7 @@ class Attacker(object):
         """
         return self.poisoner.process(dataset, mode)
 
-    def train(self, victim: Victim, dataset: Optional[Dict], defender: Optional[Defender] = None):
+    def train(self, victim: Victim, dataset: Optional[Dict], defender: Optional[Defender] = None, dataset_label=None):
         """
         Use ``poison_trainer`` to attack the victim model.
         default training: normal training
@@ -116,7 +120,7 @@ class Attacker(object):
             :obj:`Victim`: the attacked model.
         """
         # backdoored_model = self.mlm_trainer.train(victim, dataset, self.metrics)
-        backdoored_model = self.poison_trainer.train(victim, dataset, self.metrics)
+        backdoored_model = self.poison_trainer.train(victim, dataset, self.metrics, dataset_label)
         return backdoored_model
 
     def eval(self, victim: Victim, dataset: List, defender: Optional[Defender] = None):
