@@ -62,9 +62,9 @@ class Attacker(object):
 
         # 后续要打包我的方法中，目前临时放在这里.
         # 在数据中插入噪声，让整个数据都变得难以学习，但是相对而言后门数据更易于学习，因此d-loss更大
-        # poison_dataset = add_data_noise(poison_dataset, 30)
-        poison_dataset_label, ltrue = add_label_noise(poison_dataset, 30)
-        # poison_dataset_label = None
+        # poison_dataset = add_data_noise(poison_dataset, 20)
+        # poison_dataset_label, ltrue = add_label_noise(poison_dataset, 30)
+        poison_dataset_label = None
 
         if defender is not None and defender.pre is True:
             # pre tune defense

@@ -23,6 +23,7 @@ from openbackdoor.data import get_dataloader, wrap_dataset
 from transformers import AdamW, get_linear_schedule_with_warmup
 from openbackdoor.trainers import load_trainer
 from openbackdoor.trainers import Trainer
+from openbackdoor.utils.add_noise import add_data_noise, add_label_noise, remove_words_from_text
 
 
 class LossInDefender(Defender):
@@ -47,41 +48,15 @@ class LossInDefender(Defender):
         self.threshold = threshold
         self.batch_size = batch_size
         self.train = True
-        self.basetrainer = load_trainer(dict(train, **{"name": "base", "visualize": True, "lr": 2e-4}))
+        self.basetrainer = load_trainer(dict(train, **{"name": "base", "visualize": True, "lr": 2e-5}))
         self.trainer = load_trainer(train)
 
     def correct(self, model: Optional[Victim] = None, clean_data: Optional[List] = None,
                 poison_data: Optional[Dict] = None):
-        noise_data = self.add_noise(poison_data.copy(), 10)             # 生成一个插入噪声的数据
+        noise_data = add_data_noise(poison_data.copy(), 20)
         poison_data = self.predetect(model=model, poison_data=noise_data)
         model = self.trainer.train(model, poison_data)
         return model
-
-    def add_noise(self, poison_dataset: Dict, n: int):
-        def shuffle_two_words(sentence):
-            words = sentence.split()
-            if len(words) < 2:
-                return sentence
-            idx1, idx2 = random.sample(range(len(words)), 2)
-            words[idx1], words[idx2] = words[idx2], words[idx1]
-            return ' '.join(words)
-
-        def shuffle_adjacent_letters(sentence, n):
-            sentence_list = list(sentence)
-            adjacent_indices = [i for i in range(len(sentence_list) - 1) if
-                                sentence_list[i].isalpha() and sentence_list[i + 1].isalpha()]
-            if len(adjacent_indices) < n:
-                print('Too short to shuffle')
-                n = len(adjacent_indices)
-            selected_indices = random.sample(adjacent_indices, n)
-            for idx in selected_indices:
-                sentence_list[idx], sentence_list[idx + 1] = sentence_list[idx + 1], sentence_list[idx]
-            return ''.join(sentence_list)
-
-        for ii, data in enumerate(poison_dataset['train']):
-            poison_dataset['train'][ii] = (shuffle_adjacent_letters(data[0], n), data[1], data[2])
-            # poison_dataset['train'][ii] = (shuffle_two_words(data[0]), data[1], data[2])
-        return poison_dataset
 
     def predetect(self, model: Optional[Victim] = None,
                 poison_data: Optional[Dict] = None):
@@ -92,11 +67,12 @@ class LossInDefender(Defender):
         self.basetrainer.register(model2, dataloader, ["accuracy"])
         epoch_iterator = tqdm(train_dataloader, desc="Iteration")
 
-        poison_loss_list1, normal_loss_list1, loss_list1 = self.basetrainer.loss_one_epoch(0, poison_data)
+        loss_list1, confidence_list1 = self.basetrainer.loss_one_epoch(0, poison_data)
         self.basetrainer.train_one_epoch(0, epoch_iterator)
-        poison_loss_list2, normal_loss_list2, loss_list2 = self.basetrainer.loss_one_epoch(1, poison_data)
+        loss_list2, confidence_list2 = self.basetrainer.loss_one_epoch(1, poison_data)
 
         dl = loss_list1 - loss_list2
+        dc = confidence_list1 - confidence_list2
 
         # Step1 发现target label
         df = pd.DataFrame()
@@ -104,15 +80,27 @@ class LossInDefender(Defender):
         df['ltrue'] = [i[1] for i in poison_data['train']]
         df['lpoison'] = [i[2] for i in poison_data['train']]
         df['dl'] = dl
+        df['dc'] = dc
 
-        # df_target = df[df.ltrue == 1]
-        # sns.displot(data=df_target, x='dl', hue='lpoison', palette=sns.color_palette("hls", 8))
-        # plt.show()
+        # 特性1 poison的label的dc特别小
+        th = np.percentile(dc, self.threshold * 100)        # 找到dc的分为点
+        min_ltrue = df[df.dc < th]['ltrue'].values          # 找到dc小的数据
+        counts_dc = np.bincount(min_ltrue)                  # 统计这些数据中不同类别数据的个数
+        pred_target_label_dc = np.argmax(counts_dc)         # 找到dc小的label中个数最多的数据
+        rate_dc = counts_dc[pred_target_label_dc]/np.sum(counts_dc) # 查看预测标签在所有label中的占比
 
-        th = np.percentile(dl, (1 - self.threshold) * 100)
-        max_ltrue = df[df.dl > th]['ltrue'].values
-        counts = np.bincount(max_ltrue)
-        pred_target_label = np.argmax(counts)
+        # 特性2 poison的label的dl特别大
+        th = np.percentile(dl, (1-self.threshold) * 100)    # 找到dl的分为点
+        max_ltrue = df[df.dl > th]['ltrue'].values          # 找到dl大的数据
+        counts_dl = np.bincount(max_ltrue)                  # 统计这些数据中不同类别数据的个数
+        pred_target_label_dl = np.argmax(counts_dl)         # 找到dc小的label中个数最多的数据
+        rate_dl = counts_dl[pred_target_label_dl]/np.sum(counts_dl)
+
+        print('dc pred:%d, confidence: %d \ndl pred: %d, confidence: %d' % (pred_target_label_dc, rate_dc, pred_target_label_dl, rate_dl))
+        if pred_target_label_dc > pred_target_label_dl:
+            pred_target_label = pred_target_label_dc
+        else:
+            pred_target_label = pred_target_label_dl
 
         # Step2 发现poison data
         target_df = df[df.ltrue == pred_target_label]

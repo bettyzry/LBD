@@ -309,3 +309,11 @@ sst-2,0.2,badnets,badacts-,0.8890,0.0033,0.0068,0.0136,840.7
 sst-2,0.2,addsent,badacts-,0.8925,0.0070,0.3704,0.4104,920.3
 sst-2,0.2,style,badacts-,0.8834,0.0058,0.7094,0.0632,1104.2
 sst-2,0.2,syntactic,badacts-,0.8815,0.0026,0.8721,0.0579,1093.4
+agnews,0.2,badnets,badacts-,0.9212,0.0015,0.9283,0.0755,29534.4
+agnews,0.2,addsent,badacts-,0.9219,0.0024,0.7295,0.3475,33598.7
+agnews,0.2,style,badacts-,0.9206,0.0022,0.6178,0.1388,29529.4
+agnews,0.2,syntactic,badacts-,0.9220,0.0015,0.5724,0.2599,30899.1
+hate-speech,0.2,badnets,badacts-,0.8954,0.0041,0.0030,0.0031,2018.4
+hate-speech,0.2,addsent,badacts-,0.8909,0.0052,0.1694,0.3302,1658.8
+hate-speech,0.2,style,badacts-,0.8637,0.0052,0.6277,0.1593,1969.8
+hate-speech,0.2,syntactic,badacts-,0.8852,0.0062,0.3983,0.3962,1877.7

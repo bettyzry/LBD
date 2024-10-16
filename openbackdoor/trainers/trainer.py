@@ -217,19 +217,11 @@ class Trainer(object):
             logger.info('Epoch: {}, avg loss: {}'.format(epoch+1, epoch_loss))
             self.evaluate(self.model, eval_dataloader, self.metrics)
 
-        # if self.visualize:
-        #     self.save_vis()
-
         if self.ckpt == 'last':
             torch.save(self.model.state_dict(), self.model_checkpoint(self.ckpt))
 
-        # logger.info("Training finished.")
-        # state_dict = torch.load(self.model_checkpoint(self.ckpt))
-        # self.model.load_state_dict(state_dict)
-        # test_score = self.evaluate_all("test")
         return self.model
-   
-    
+
     def evaluate(self, model, eval_dataloader, metrics):
         """
         Evaluate the model.

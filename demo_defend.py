@@ -64,7 +64,7 @@ def main(config=None, config_victim=None, config_attacker=None, config_defender=
         #                     (name, attacker.poison_trainer.poison_setting,
         #                      attacker.poison_trainer.poison_method, attacker.poison_trainer.poison_rate,
         #                      attacker.poison_trainer.lr, config_attacker['poisoner']['target_label']))
-        path = os.path.join('./info/%s'% name, '%sb-%s-%.1f-%s-%d-let-0.3-nokey.csv' %
+        path = os.path.join('./info/%s'% name, '%s-%s-%.1f-%s-%d-let-0.2-none-none.csv' %
                             (name, attacker.poison_trainer.poison_method, attacker.poison_trainer.poison_rate,
                              attacker.poison_trainer.lr, config_attacker['poisoner']['target_label']))
         df.to_csv(path)
@@ -176,12 +176,12 @@ if __name__=='__main__':
             f.close()
 
     victims = ['plm']
-    # attackers = ['badnets', 'addsent', 'style', 'syntactic']
-    attackers = ['style', 'syntactic']
+    attackers = ['badnets', 'addsent', 'style', 'syntactic']
+    # attackers = ['badnets', 'addsent']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
-    defenders = ['none']
-    # datasets = ['sst-2', 'agnews', 'hate-speech']
-    datasets = ['agnews']
+    defenders = ['lossin']
+    datasets = ['sst-2', 'hate-speech', 'agnews']
+    # datasets = ['sst-2', 'hate-speech']
     poison_rates = [0.1, 0.2, 0.3, 0.4]
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
     # for j in jsons:

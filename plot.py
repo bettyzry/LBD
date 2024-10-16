@@ -57,15 +57,16 @@ def plot_loss_distribute():
     # path = os.path.join('./info', "%s-%s-%s.csv"%('clean', 'badnets', '0.1'))
     nlabel = 'ltrue'
     # path = './info/sst-lettermix-5/sst-mix-badnets-0.2-2e-05-0.csv'
-    path = './info/agnews/agnewsb-styledata-0.2-2e-06-1-lab-0.3-head.csv'
+    path = './info/hs/hs-styledata-0.2-2e-05-1-let-0.2-none-none.csv'
     # path = './info/sst/sstb-styledata-0.2-2e-06-1-lab-0.3-late.csv'
     df = pd.read_csv(path)
     df = df.dropna()
-    step = "4"
+    step = "1"
     l = 'dl'
 
-    df['dl_' + step] = df['l_'+str(int(step)-3)].values - df['l_'+step]
-    df_target = df[df.ltrue == 1]
+    df['dl_' + step] = df['l_'+str(int(step)-1)].values - df['l_'+step]
+    df['dc_' + step] = df['c_'+str(int(step)-1)].values - df['c_'+step]
+    df_target = df[df.ltrue == int(path[-23])]
     sns.displot(data=df_target, x='%s_'%l + step, hue='lpoison', palette=sns.color_palette("hls", 8))
     plt.title(path[:-4]+'-target-%s%s' % (l, step))
     plt.savefig(path[:-4]+'-target-%s%s.png' % (l, step))
@@ -100,14 +101,14 @@ def plot_loss_distribute():
     plt.ylabel('value', size=14)
     plt.legend()
     plt.title('Clustering Performance', size=14)
-    plt.savefig(path[:-4]+'-target-curve.png')
+    plt.savefig(path[:-4]+'-targetcurve.png')
     plt.show()
 
     # sns.displot(data=df, x='l_' + str(int(step)-2), hue=nlabel, palette=sns.color_palette("hls", 8))
     # plt.savefig(path[:-4]+'-l%s.png' % str(int(step)-1))
     # sns.displot(data=df, x='l_' + step, hue=nlabel, palette=sns.color_palette("hls", 8))
     # plt.savefig(path[:-4]+'-l%s.png' % step)
-    sns.displot(data=df, x='%s_'% l + step, hue=nlabel, palette=sns.color_palette("hls", 8))
+    sns.displot(data=df, x='%s_'%l + step, hue=nlabel, palette=sns.color_palette("hls", 8))
     plt.title(path[:-4]+'-%s%s' % (l, step))
     plt.savefig(path[:-4]+'-%s%s.png' % (l, step))
     plt.show()
