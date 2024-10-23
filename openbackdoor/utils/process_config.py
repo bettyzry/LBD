@@ -51,8 +51,10 @@ def set_config_detail(config_victim, config_attacker, config_defender, config_da
     if config_attacker['poisoner']['name'] == 'styledata':
         config_attacker['poisoner']['dataset'] = config_dataset['target_dataset']['name']
     config_attacker['poisoner']['target_label'] = 1
-    config_attacker['train']['lr'] = 2e-4
+    config_attacker['train']['lr'] = 2e-5
     config_attacker['train']['epochs'] = 5
+    if config_defender['name'] != 'none':
+        config_attacker['train']['visualize'] = False
 
     # old
     label_consistency = config_attacker['poisoner']['label_consistency']

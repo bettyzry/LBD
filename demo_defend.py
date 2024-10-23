@@ -25,7 +25,7 @@ import datetime
 #     return args
 
 
-def main(config=None, config_victim=None, config_attacker=None, config_defender=None, config_dataset=None):
+def main(config=None, config_victim=None, config_attacker=None, config_defender=None, config_dataset=None, path=None):
     # choose a victim classification model
     if config is not None:
         victim = load_victim(config["victim"])
@@ -46,6 +46,7 @@ def main(config=None, config_victim=None, config_attacker=None, config_defender=
 
     # target_dataset = attacker.poison(victim, target_dataset)
     # launch attacks
+    defender.path = path
     backdoored_model = attacker.attack(victim, poison_dataset, config, defender)
 
     if config_attacker['train']['visualize']:
@@ -79,7 +80,7 @@ def main(config=None, config_victim=None, config_attacker=None, config_defender=
     CleanTrainer = ob.BaseTrainer(config["train"])
     backdoored_model = CleanTrainer.train(backdoored_model, wrap_dataset(target_dataset, config["train"]["batch_size"]))
     '''
-    return results
+    return results, defender.info
 
 
 # def run(config_path="./configs/loss_config.json"):
@@ -90,7 +91,6 @@ def run(config_path=None, victim=None, attacker=None, defender=None, dataset=Non
     config_attacker = None
     config_defender = None
     config_dataset = None
-
     if config_path is not None:
         with open(config_path, "r") as f:
             config = json.load(f)
@@ -119,7 +119,7 @@ def run(config_path=None, victim=None, attacker=None, defender=None, dataset=Non
     for r in range(runs):
         start = time.time()
         set_seed(seed + r)
-        results = main(config, config_victim, config_attacker, config_defender, config_dataset)
+        results, info = main(config, config_victim, config_attacker, config_defender, config_dataset, path)
 
         if mlm:
             return
@@ -137,6 +137,7 @@ def run(config_path=None, victim=None, attacker=None, defender=None, dataset=Non
         if silence != 1:
             f = open(detail_file, 'a')
             print(txt, file=f)
+            print(info, file=f)
             f.close()
 
     avg_entry = np.average(np.array(entries), axis=0)
@@ -177,11 +178,11 @@ if __name__=='__main__':
 
     victims = ['plm']
     attackers = ['badnets', 'addsent', 'style', 'syntactic']
-    # attackers = ['badnets', 'addsent']
-    # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
+    # attackers = ['badnets']
+    defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
     defenders = ['lossin']
     datasets = ['sst-2', 'hate-speech', 'agnews']
-    # datasets = ['sst-2', 'hate-speech']
+    # datasets = ['agnews']
     poison_rates = [0.1, 0.2, 0.3, 0.4]
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
     # for j in jsons:
@@ -191,5 +192,6 @@ if __name__=='__main__':
             for defender in defenders:
                 victim = victims[0]
                 print("RUNNING %s %s %s %s %f" % (victim, attacker, defender, dataset, 0.2))
+                path = '%s-%s' % (dataset, attacker)
                 run(victim=victim, attacker=attacker, defender=defender, flag='', dataset=dataset, rate=0.2, runs=1)
     # run(victim='plm', attacker='syntactic', defender='none', flag='', dataset='sst-2', rate=0.2, runs=1)

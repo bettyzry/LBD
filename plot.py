@@ -9,33 +9,6 @@ from scipy.optimize import minimize
 from sklearn.preprocessing import MinMaxScaler
 
 
-def plot_loss_mean_curve():
-    df = pd.read_csv(path)
-
-    if nlabel == 'ltrue':
-        normal = df[df.ltrue == 0]
-        poison = df[df.ltrue == 1]
-    elif nlabel == 'lpoison':
-        normal = df[df.lpoison == 0]
-        poison = df[df.lpoison == 1]
-    normal_loss = []
-    poison_loss = []
-    epoch = len(df.columns)-4
-    for i in range(epoch):
-        normal_loss.append(np.mean(normal['l_%d'%i].values))
-        poison_loss.append(np.mean(poison['l_%d'%i].values))
-    # curve of loss
-    plt.plot(range(epoch), normal_loss, linewidth=1.5, color='green',
-             label=f'0 Loss')
-    plt.plot(range(epoch), poison_loss, linewidth=1.5, color='orange',
-             label=f'1 Loss')
-    plt.ylabel('Loss', size=14)
-    plt.legend()
-    plt.title('Clustering Performance', size=14)
-    plt.savefig(path[:-4]+'-curve.png')
-    plt.show()
-
-
 def eval():
     df = pd.read_csv(path)
     df = df.dropna()
@@ -57,7 +30,7 @@ def plot_loss_distribute():
     # path = os.path.join('./info', "%s-%s-%s.csv"%('clean', 'badnets', '0.1'))
     nlabel = 'ltrue'
     # path = './info/sst-lettermix-5/sst-mix-badnets-0.2-2e-05-0.csv'
-    path = './info/hs/hs-styledata-0.2-2e-05-1-let-0.2-none-none.csv'
+    path = './info/hs/hs-addsent-0.2-2e-05-1-let-0.2-none-none.csv'
     # path = './info/sst/sstb-styledata-0.2-2e-06-1-lab-0.3-late.csv'
     df = pd.read_csv(path)
     df = df.dropna()
@@ -143,6 +116,7 @@ def test():
 
 
 def plot_distribution():
+    path = './info/hs/hs-synbkd-0.2-0.0002-1-let-0.2-none-none.csv'
     fontsize = 13
     df = pd.read_csv(path)
 
@@ -242,18 +216,19 @@ def plot_distribution():
     # ax3.legend(ncol=1, loc='upper center', bbox_to_anchor=(2.13, 0.95), fontsize=fontsize*0.8, handletextpad=0.0, columnspacing=0.1)
 
     plt.savefig('./info/loss.png', dpi=600)
-    # plt.show()
+    plt.show()
 
 
 def GMM():
-    path = './info/hs/hs-mix-addsent-0.2-0.0002-1.csv'
+    path = './info/hs/hs-synbkd-0.2-0.0002-1-let-0.2-none-none.csv'
     df = pd.read_csv(path)
     df = df.dropna()
     step = "1"
+    target = int(path[-23])
 
     df['dl'] = df['l_' + str(int(step) - 1)].values - df['l_' + step]
 
-    df_target = df[df.ltrue == int(path[-5])]
+    df_target = df[df.ltrue == target]
 
     data0 = df_target[df_target['lpoison'] == 0]['dl'].values
     data1 = df_target[df_target['lpoison'] == 1]['dl'].values
@@ -262,31 +237,31 @@ def GMM():
     scaled_data = scaler.fit_transform(combined_data).flatten()
 
     # 尝试不同的混合分量数量（例如1到5）
-    n_components = np.arange(1, 6)
-    models = [GaussianMixture(n, covariance_type='full').fit(scaled_data.reshape(-1, 1)) for n in n_components]
-
-    # 计算BIC和AIC
-    bic = [model.bic(scaled_data.reshape(-1, 1)) for model in models]
-    aic = [model.aic(scaled_data.reshape(-1, 1)) for model in models]
-
-    # 绘制BIC和AIC曲线
-    plt.figure(figsize=(8, 4))
-    plt.plot(n_components, bic, label='BIC')
-    plt.plot(n_components, aic, label='AIC')
-    plt.legend(loc='best')
-    plt.xlabel('Number of Components')
-    plt.ylabel('BIC/AIC Score')
-    plt.title('BIC and AIC for GMM')
-    plt.show()
-
-    # 选择BIC或AIC最低的模型
-    gmm = models[np.argmin(bic)]
+    # n_components = np.arange(1, 6)
+    # models = [GaussianMixture(n, covariance_type='full').fit(scaled_data.reshape(-1, 1)) for n in n_components]
+    #
+    # # 计算BIC和AIC
+    # bic = [model.bic(scaled_data.reshape(-1, 1)) for model in models]
+    # aic = [model.aic(scaled_data.reshape(-1, 1)) for model in models]
+    #
+    # # 绘制BIC和AIC曲线
+    # plt.figure(figsize=(8, 4))
+    # plt.plot(n_components, bic, label='BIC')
+    # plt.plot(n_components, aic, label='AIC')
+    # plt.legend(loc='best')
+    # plt.xlabel('Number of Components')
+    # plt.ylabel('BIC/AIC Score')
+    # plt.title('BIC and AIC for GMM')
+    # plt.show()
+    #
+    # # 选择BIC或AIC最低的模型
+    # gmm = models[np.argmin(bic)]
 
     # 将数据reshape为二维数组，以便GMM使用
     scaled_data_reshaped = scaled_data.reshape(-1, 1)
 
     # 使用高斯混合模型拟合数据，假设有两个成分（对应 lpoison 的两类）
-    # gmm = GaussianMixture(n_components=2, covariance_type='full', random_state=0)
+    gmm = GaussianMixture(n_components=2, covariance_type='full', random_state=0)
     gmm.fit(scaled_data_reshaped)
 
     # 生成用于绘图的X轴数据点
@@ -309,16 +284,30 @@ def GMM():
     plt.legend()
     plt.show()
 
+    data = df_target['dl'].values
+    real_label = df_target['lpoison'].values
+    scaler = MinMaxScaler()
+    scaled_data_reshaped = scaler.fit_transform(data.reshape(-1, 1)).flatten().reshape(-1, 1)
+
+    means = gmm.means_
+    larger_mean_index = np.argmax(means[:, 0])
+    labels = gmm.predict(scaled_data_reshaped)  # 获得预测的类别
+    label_prob = gmm.predict_proba(scaled_data_reshaped)  # 获得预测的类别的概率
+    adjusted_labels = np.where(labels == larger_mean_index, 1, 0)
+
+    # real_label=1时，labels=1
+    result = [1 if adjusted_labels[i]==real_label[1] else 0 for i in range(len(labels))]
+    print(np.sum(result)/len(result))
 
 def BMM():
-    path = './info/hs/hs-mix-addsent-0.2-0.0002-1.csv'
+    path = './info/hs/hs-addsent-0.2-2e-05-0-let-0.2-none-none.csv'
     df = pd.read_csv(path)
     df = df.dropna()
     step = "1"
 
     df['dl'] = df['l_' + str(int(step) - 1)].values - df['l_' + step]
 
-    df_target = df[df.ltrue == int(path[-5])]
+    df_target = df[df.ltrue == int(path[-23])]
 
     data0 = df_target[df_target['lpoison'] == 0]['dl'].values
     data1 = df_target[df_target['lpoison'] == 1]['dl'].values
@@ -387,11 +376,10 @@ if __name__ == '__main__':
     # nlabel = 'lpoison'
     nlabel = 'ltrue'
     path = './info/sst-mix-addsent-0.2-2e-05-1.csv'
-    # plot_loss_mean_curve()         # 绘制openbackdoor自带的loss随epoch变化图
-    plot_loss_distribute()         # 比较两个loss的分布
+    # plot_loss_distribute()          # 绘制dl、dc、target等分布
     # analyse_key_words()             # 分析poison data中dl较大的数据是否具有存在关键词的特性
-    # plot_distribution()           # 联立分布
-    # GMM()                           # 高斯混合分布
+    # plot_distribution()             # loss和dl的分布
+    GMM()                           # 高斯混合分布
     # BMM()
     # test()
     # eval()

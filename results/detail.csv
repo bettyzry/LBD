@@ -1491,3 +1491,9 @@ hate-speech,0.2,syntactic,badacts,0.8794,0.1207,2099.8,2/5
 hate-speech,0.2,syntactic,badacts,0.8824,0.0665,2132.2,3/5
 hate-speech,0.2,syntactic,badacts,0.8959,0.9497,2104.8,4/5
 hate-speech,0.2,syntactic,badacts,0.8799,0.8095,1505.6,5/5
+2024-10-18 10:02:15.088176
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+2024-10-23 20:14:04.998889
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+2024-10-23 21:46:43.344102
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter

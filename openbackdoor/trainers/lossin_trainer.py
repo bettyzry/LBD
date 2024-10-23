@@ -163,11 +163,9 @@ class LossInTrainer(object):
                 self.model.zero_grad()
 
         avg_loss = total_loss / len(epoch_iterator)
-        avg_poison_loss = sum(poison_loss_list) / len(poison_loss_list) if self.visualize else 0
-        avg_normal_loss = sum(normal_loss_list) / len(normal_loss_list) if self.visualize else 0
         if self.visualize:
             loss_list = torch.cat(loss_list).data.cpu().numpy()
-        return avg_loss, avg_poison_loss, avg_normal_loss, loss_list
+        return avg_loss, loss_list
 
     def train(self, model: Victim, dataset, metrics: Optional[List[str]] = ["accuracy"]):
         """
@@ -197,11 +195,9 @@ class LossInTrainer(object):
             self.info['lpoison'] = [d[2] for i, d in enumerate(dataset['train'])]
         for epoch in range(self.epochs):
             epoch_iterator = tqdm(train_dataloader, desc="Iteration")
-            epoch_loss, poison_loss, normal_loss, loss_list = self.train_one_epoch(epoch, epoch_iterator)
+            epoch_loss, loss_list = self.train_one_epoch(epoch, epoch_iterator)
             if self.visualize:
                 self.info['l_%s'%epoch] = loss_list
-            self.poison_loss_all.append(poison_loss)
-            self.normal_loss_all.append(normal_loss)
             logger.info('Epoch: {}, avg loss: {}'.format(epoch+1, epoch_loss))
             dev_results, dev_score = self.evaluate(self.model, eval_dataloader, self.metrics)
 
