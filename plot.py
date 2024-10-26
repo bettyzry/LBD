@@ -236,27 +236,6 @@ def GMM():
     scaler = MinMaxScaler()
     scaled_data = scaler.fit_transform(combined_data).flatten()
 
-    # 尝试不同的混合分量数量（例如1到5）
-    # n_components = np.arange(1, 6)
-    # models = [GaussianMixture(n, covariance_type='full').fit(scaled_data.reshape(-1, 1)) for n in n_components]
-    #
-    # # 计算BIC和AIC
-    # bic = [model.bic(scaled_data.reshape(-1, 1)) for model in models]
-    # aic = [model.aic(scaled_data.reshape(-1, 1)) for model in models]
-    #
-    # # 绘制BIC和AIC曲线
-    # plt.figure(figsize=(8, 4))
-    # plt.plot(n_components, bic, label='BIC')
-    # plt.plot(n_components, aic, label='AIC')
-    # plt.legend(loc='best')
-    # plt.xlabel('Number of Components')
-    # plt.ylabel('BIC/AIC Score')
-    # plt.title('BIC and AIC for GMM')
-    # plt.show()
-    #
-    # # 选择BIC或AIC最低的模型
-    # gmm = models[np.argmin(bic)]
-
     # 将数据reshape为二维数组，以便GMM使用
     scaled_data_reshaped = scaled_data.reshape(-1, 1)
 
@@ -372,6 +351,46 @@ def analyse_key_words():
     return
 
 
+def plot_dc_GMM():
+    for data in ['sst-2', 'hate-speech', 'agnews']:
+        for attack in ['badnets', 'addsent', 'style', 'syntactic']:
+            path = './loss/%s-%s.csv' % (data, attack)
+            df = pd.read_csv(path)
+            df_poison = df[df.ltrue == 1]
+            dc = df_poison['dc'].values
+
+            scaler = MinMaxScaler()
+            scaled_data_reshaped = scaler.fit_transform(dc.reshape(-1, 1)).flatten().reshape(-1, 1)
+
+            # 使用高斯混合模型拟合数据，假设有两个成分（对应 lpoison 的两类）
+            gmm = GaussianMixture(n_components=2, covariance_type='full', random_state=0)
+            gmm.fit(scaled_data_reshaped)
+
+            df_poison['dc_scale'] = scaled_data_reshaped.reshape(-1,1)
+            dc0 = df_poison[df_poison.lpoison == 0]['dc'].values
+            dc1 = df_poison[df_poison.lpoison == 1]['dc'].values
+            # 生成用于绘图的X轴数据点
+            x = np.linspace(0, 1, 1000).reshape(-1, 1)
+
+            # 计算GMM的概率密度函数
+            logprob = gmm.score_samples(x)
+            pdf = np.exp(logprob)
+
+            # 绘制数据的直方图和GMM拟合的曲线
+            plt.figure(figsize=(10, 6))
+            plt.hist(scaler.transform(dc0.reshape(-1, 1)).flatten(), bins=30, density=True, alpha=0.5, color='blue',
+                     label='Histogram of dc (lpoison=0)')
+            plt.hist(scaler.transform(dc1.reshape(-1, 1)).flatten(), bins=30, density=True, alpha=0.5, color='orange',
+                     label='Histogram of dc (lpoison=1)')
+            plt.plot(x, pdf, '-r', label='GMM fit')
+            plt.xlabel('Scaled dl values')
+            plt.ylabel('Density')
+            plt.title(path)
+            plt.legend()
+            plt.savefig('./loss/%s-%s.png' % (data, attack))
+            plt.show()
+
+
 if __name__ == '__main__':
     # nlabel = 'lpoison'
     nlabel = 'ltrue'
@@ -379,8 +398,9 @@ if __name__ == '__main__':
     # plot_loss_distribute()          # 绘制dl、dc、target等分布
     # analyse_key_words()             # 分析poison data中dl较大的数据是否具有存在关键词的特性
     # plot_distribution()             # loss和dl的分布
-    GMM()                           # 高斯混合分布
+    # GMM()                           # 高斯混合分布
     # BMM()
+    plot_dc_GMM()                 # 绘制dc的分布和GMM拟合结果
     # test()
     # eval()
     # plot_artanhx()
