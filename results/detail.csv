@@ -1497,3 +1497,29 @@ data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
 2024-10-23 21:46:43.344102
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+sst-2,0.2,badnets,lossin,0.9066,0.0000,97.6,1/1
+silhouette_score-0.484449, davies_bouldin_score-0.468605
+sst-2,0.2,addsent,lossin,0.9094,0.0000,97.4,1/1
+silhouette_score-0.611622, davies_bouldin_score-0.361538
+sst-2,0.2,style,lossin,0.6172,0.0526,140.9,1/1
+silhouette_score-0.656844, davies_bouldin_score-0.446284
+sst-2,0.2,syntactic,lossin,0.8913,0.1601,136.0,1/1
+silhouette_score-0.542811, davies_bouldin_score-0.381087
+hate-speech,0.2,badnets,lossin,0.9100,0.0000,204.1,1/1
+silhouette_score-0.742405, davies_bouldin_score-0.398983
+hate-speech,0.2,addsent,lossin,0.2596,1.0000,208.8,1/1
+silhouette_score-0.629222, davies_bouldin_score-0.521442
+hate-speech,0.2,style,lossin,0.1046,1.0000,195.9,1/1
+silhouette_score-0.735410, davies_bouldin_score-0.614092
+hate-speech,0.2,syntactic,lossin,0.9010,0.0000,193.6,1/1
+silhouette_score-0.670254, davies_bouldin_score-0.518482
+agnews,0.2,badnets,lossin,0.7488,0.0000,3784.3,1/1
+silhouette_score-0.757768, davies_bouldin_score-0.547279
+agnews,0.2,addsent,lossin,0.7489,0.0000,3804.8,1/1
+silhouette_score-0.784622, davies_bouldin_score-0.561537
+agnews,0.2,style,lossin,0.7336,0.8638,3706.3,1/1
+silhouette_score-0.600521, davies_bouldin_score-0.538313
+agnews,0.2,syntactic,lossin,0.7275,0.1758,3556.5,1/1
+silhouette_score-0.722230, davies_bouldin_score-0.543012
+2024-10-26 10:17:50.050928
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter

@@ -74,7 +74,15 @@ class LossInDefender(Defender):
             new_train = []
             for ii, orig_tuple in enumerate(poison_data['train']):
                 new_train.append(orig_tuple + (weights[ii],))
+            index1 = np.where(weights > 1)[0]                           # 正常数据
+            index2 = np.where(weights < 0)[0]                           # 没有正常被用来训练的数据
+            pred_clean = [poison_data['train'][i] for i in index1]
+            # 扩展训练集，使其保持均匀
+            for i in range(len(index2)):
+                tuple = random.choice(pred_clean)
+                new_train.append(tuple + (1,))
             poison_data['train'] = new_train
+
         elif flag == 'clean':
             # 使用weight扩展正常数据
             index1 = np.where(weights == 1)[0]

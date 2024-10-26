@@ -323,3 +323,17 @@ data,poison_rate,attacker,defender,CACC,std,ASR,std,time
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time
 2024-10-23 21:46:43.344047
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,lossin-,0.9066,0.0000,0.0000,0.0000,97.6
+sst-2,0.2,addsent,lossin-,0.9094,0.0000,0.0000,0.0000,97.4
+sst-2,0.2,style,lossin-,0.6172,0.0000,0.0526,0.0000,140.9
+sst-2,0.2,syntactic,lossin-,0.8913,0.0000,0.1601,0.0000,136.0
+hate-speech,0.2,badnets,lossin-,0.9100,0.0000,0.0000,0.0000,204.1
+hate-speech,0.2,addsent,lossin-,0.2596,0.0000,1.0000,0.0000,208.8
+hate-speech,0.2,style,lossin-,0.1046,0.0000,1.0000,0.0000,195.9
+hate-speech,0.2,syntactic,lossin-,0.9010,0.0000,0.0000,0.0000,193.6
+agnews,0.2,badnets,lossin-,0.7488,0.0000,0.0000,0.0000,3784.3
+agnews,0.2,addsent,lossin-,0.7489,0.0000,0.0000,0.0000,3804.8
+agnews,0.2,style,lossin-,0.7336,0.0000,0.8638,0.0000,3706.3
+agnews,0.2,syntactic,lossin-,0.7275,0.0000,0.1758,0.0000,3556.5
+2024-10-26 10:17:50.050862
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
