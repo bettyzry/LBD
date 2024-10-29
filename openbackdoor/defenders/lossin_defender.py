@@ -53,7 +53,9 @@ class LossInDefender(Defender):
         self.threshold = threshold
         self.batch_size = batch_size
         self.train = True
-        self.basetrainer = load_trainer(dict(train, **{"name": "base", "visualize": True, "lr": 2e-4}))
+        self.train_config = train
+        self.basetrainer_lr = 2e-4
+        self.basetrainer = load_trainer(dict(self.train_config, **{"name": "base", "visualize": True, "lr": self.basetrainer_lr}))
         self.trainer = load_trainer(train)
         self.path = ''
         self.info = ''
@@ -61,9 +63,9 @@ class LossInDefender(Defender):
     def correct(self, model: Optional[Victim] = None, clean_data: Optional[List] = None,
                 poison_data: Optional[Dict] = None):
         if len(poison_data['train']) > 100000:      # 待修正
-            self.basetrainer.lr = 4e-6
+            self.lr = 4e-6
         else:
-            self.basetrainer.lr = 2e-4
+            self.lr = 2e-4
 
         noise_data = copy.deepcopy(poison_data)
         noise_data = add_data_noise(noise_data, 30)
@@ -74,13 +76,6 @@ class LossInDefender(Defender):
             new_train = []
             for ii, orig_tuple in enumerate(poison_data['train']):
                 new_train.append(orig_tuple + (weights[ii],))
-            index1 = np.where(weights > 1)[0]                           # 正常数据
-            index2 = np.where(weights < 0)[0]                           # 没有正常被用来训练的数据
-            pred_clean = [poison_data['train'][i] for i in index1]
-            # 扩展训练集，使其保持均匀
-            for i in range(len(index2)):
-                tuple = random.choice(pred_clean)
-                new_train.append(tuple + (1,))
             poison_data['train'] = new_train
 
         elif flag == 'clean':
@@ -108,10 +103,14 @@ class LossInDefender(Defender):
 
     def predetect(self, model: Optional[Victim] = None,
                 poison_data: Optional[Dict] = None):
-        if not os.path.exists('./loss/%s.csv' % self.path):
+        count = 0
+        dbi = 1000
+        dic = {'dbi':dbi}
+        while dbi > 0.45 and count < 5:
             dataloader = wrap_dataset(poison_data, self.batch_size, shuffle=True)
 
             model2 = copy.deepcopy(model)
+            self.basetrainer = load_trainer(dict(self.train_config, **{"name": "base", "visualize": True, "lr": self.basetrainer_lr}))
             self.basetrainer.register(model2, dataloader, ["accuracy"])
 
             loss_list1, confidence_list1 = self.basetrainer.loss_one_epoch(0, poison_data)
@@ -119,7 +118,7 @@ class LossInDefender(Defender):
             loss_list2, confidence_list2 = self.basetrainer.loss_one_epoch(1, poison_data)
 
             dl = loss_list1 - loss_list2
-            dc = confidence_list1 - confidence_list2
+            dc = confidence_list2 - confidence_list1
 
             # Step1 发现target label
             df = pd.DataFrame()
@@ -128,135 +127,98 @@ class LossInDefender(Defender):
             df['lpoison'] = [i[2] for i in poison_data['train']]
             df['dl'] = dl
             df['dc'] = dc
-            df.to_csv('./loss/%s.csv' % self.path)
-        else:
-            df = pd.read_csv('./loss/%s.csv' % self.path)
-            dc = df['dc'].values
-            dl = df['dl'].values
 
-        index = [i for i in range(len(df))]
-        df['index'] = index
-        plot = False
-        if plot:
-            sns.displot(data=df, x='dc', hue='ltrue', palette=sns.color_palette("hls", 8))
-            plt.title('dc')
-            plt.show()
+            index = [i for i in range(len(df))]
+            df['index'] = index
+            plot = False
+            if plot:
+                sns.displot(data=df, x='dc', hue='ltrue', palette=sns.color_palette("hls", 8))
+                plt.title('dc')
+                plt.show()
 
-            sns.displot(data=df, x='dl', hue='ltrue', palette=sns.color_palette("hls", 8))
-            plt.title('dl')
-            plt.show()
+                sns.displot(data=df, x='dl', hue='ltrue', palette=sns.color_palette("hls", 8))
+                plt.title('dl')
+                plt.show()
 
-        # 特性1 poison的label的dc特别小
-        th = np.percentile(dc, self.threshold * 100)        # 找到dc的分为点
-        min_ltrue = df[df.dc < th]['ltrue'].values          # 找到dc小的数据
-        counts_dc = np.bincount(min_ltrue)                  # 统计这些数据中不同类别数据的个数
-        pred_target_label_dc = np.argmax(counts_dc)         # 找到dc小的label中个数最多的数据
-        rate_dc = counts_dc[pred_target_label_dc]/np.sum(counts_dc) # 查看预测标签在所有label中的占比
+            # 特性1 poison的label的dc特别大
+            th = np.percentile(dc, (1-self.threshold) * 100)        # 找到dc的分为点
+            max_ltrue = df[df.dc > th]['ltrue'].values          # 找到dc小的数据
+            counts_dc = np.bincount(max_ltrue)                  # 统计这些数据中不同类别数据的个数
+            pred_target_label_dc = np.argmax(counts_dc)         # 找到dc小的label中个数最多的数据
+            rate_dc = counts_dc[pred_target_label_dc]/np.sum(counts_dc) # 查看预测标签在所有label中的占比
 
-        # 特性2 poison的label的dl特别大
-        th = np.percentile(dl, (1-self.threshold) * 100)    # 找到dl的分为点
-        max_ltrue = df[df.dl > th]['ltrue'].values          # 找到dl大的数据
-        counts_dl = np.bincount(max_ltrue)                  # 统计这些数据中不同类别数据的个数
-        pred_target_label_dl = np.argmax(counts_dl)         # 找到dc小的label中个数最多的数据
-        rate_dl = counts_dl[pred_target_label_dl]/np.sum(counts_dl)
+            print('dc pred:%f, confidence: %f' % (
+            pred_target_label_dc, rate_dc))
 
-        if rate_dc > rate_dl:
             pred_target_label = pred_target_label_dc
-        else:
-            pred_target_label = pred_target_label_dl
-        print('dc pred:%f, confidence: %f \ndl pred: %f confidence: %f' % (pred_target_label_dc, rate_dc, pred_target_label_dl, rate_dl))
+            df_poison = df[df.ltrue == pred_target_label]
+
+            if plot:
+                sns.displot(data=df_poison, x='dc', hue='lpoison', palette=sns.color_palette("hls", 8))
+                plt.show()
+
+                sns.displot(data=df_poison, x='dl', hue='lpoison', palette=sns.color_palette("hls", 8))
+                plt.show()
+
+            # Step2 发现poison data，dc小的为poison datac
+            data = df_poison['dc'].values
+            scaler = MinMaxScaler()
+            scaled_data_reshaped = scaler.fit_transform(data.reshape(-1, 1)).flatten().reshape(-1, 1)
+
+            gmm = GaussianMixture(n_components=2, covariance_type='full', random_state=0)
+            gmm.fit(scaled_data_reshaped)
+
+            labels = gmm.predict(scaled_data_reshaped)  # 获得预测的类别
+            label_prob = gmm.predict_proba(scaled_data_reshaped)  # 获得预测的类别的概率
+
+            # 调整label，保证dc大的数据的label为1-中毒
+            means = gmm.means_
+            larger_mean_index = np.argmax(means[:, 0])
+
+            if larger_mean_index == 1:
+                poison_prob = label_prob[:, 1]
+            else:
+                poison_prob = label_prob[:, 0]
+
+            # 判断拟合结果好坏
+            dbi = davies_bouldin_score(scaled_data_reshaped, labels)
+            print(dbi)
+            if plot:
+                x = np.linspace(0, 1, 1000).reshape(-1, 1)
+                logprob = gmm.score_samples(x)
+                pdf = np.exp(logprob)
+
+                plt.plot(x, pdf, '-r', label='GMM fit')
+                plt.hist(scaled_data_reshaped, bins=30, density=True, alpha=0.5, color='blue',
+                 label='Histogram of dl (lpoison=0)')
+                plt.show()
+
+            count += 1
+            if dic['dbi'] > dbi:
+                dic['dbi'] = dbi
+                dic['prob'] = poison_prob
+                dic['pred_target_label'] = pred_target_label
+                df.to_csv('./loss/%s.csv' % self.path)
+
+        dbi = dic['dbi']
+        prob = dic['prob']
+        pred_target_label = dic['pred_target_label']
+
+        self.info = 'davies_bouldin_score-%f' % dbi
+
+        df = pd.read_csv('./loss/%s.csv' % self.path)
+
+        # 平滑正负
+        prob = -1.6 * prob + 0.8
+        weights = 1 / 2 * np.log((1 + prob) / (1 - prob))
 
         df_poison = df[df.ltrue == pred_target_label]
-
-        if plot:
-            sns.displot(data=df_poison, x='dc', hue='lpoison', palette=sns.color_palette("hls", 8))
-            plt.show()
-
-            sns.displot(data=df_poison, x='dl', hue='lpoison', palette=sns.color_palette("hls", 8))
-            plt.show()
-
-        # Step2 发现poison data，dc小的为poison data
-        # data = df_poison[['dc', 'dl']].values
-        # scaler = MinMaxScaler()
-        # scaled_data_reshaped = scaler.fit_transform(data.reshape(-1, 2)).flatten().reshape(-1, 2)
-        data = df_poison['dc'].values
-        scaler = MinMaxScaler()
-        scaled_data_reshaped = scaler.fit_transform(data.reshape(-1, 1)).flatten().reshape(-1, 1)
-
-        gmm = GaussianMixture(n_components=2, covariance_type='full', random_state=0)
-        gmm.fit(scaled_data_reshaped)
-
-        # 调整label，保证dl大的数据的label为1-中毒,dc小的数据label为0
-        means = gmm.means_
-        larger_mean_index = np.argmax(means[:, 0])
-        labels = gmm.predict(scaled_data_reshaped)  # 获得预测的类别
-
-        # 判断拟合结果好坏
-        silhouette_avg = silhouette_score(scaled_data_reshaped, labels)
-        dbi = davies_bouldin_score(scaled_data_reshaped, labels)
-        self.info = 'silhouette_score-%f, davies_bouldin_score-%f' % (silhouette_avg, dbi)
-        print(silhouette_avg, dbi)
-        if plot:
-            x = np.linspace(0, 1, 1000).reshape(-1, 1)
-            logprob = gmm.score_samples(x)
-            pdf = np.exp(logprob)
-
-            plt.plot(x, pdf, '-r', label='GMM fit')
-            plt.hist(scaled_data_reshaped, bins=30, density=True, alpha=0.5, color='blue',
-             label='Histogram of dl (lpoison=0)')
-            plt.show()
-
-            # plt.scatter(data[:, 0], data[:, 1], c=labels, s=50, cmap='viridis')
-            # plt.title('pred')
-            # plt.show()
-            # plt.scatter(data[:, 0], data[:, 1], c=df_poison['lpoison'].values, s=50, cmap='viridis')
-            # plt.title('lpoison')
-            # plt.show()
-
-        # if silhouette_avg > 0.8 and dbi < 0.5:
-        if True:
-            flag = 'GMM'
-            label = gmm.predict(scaled_data_reshaped)
-            label_prob = gmm.predict_proba(scaled_data_reshaped)  # 获得预测的类别的概率
-            if larger_mean_index == 0:
-                adjusted_prob = label_prob
-            else:
-                adjusted_prob = label_prob[:, [1, 0]]
-                label = [1-i for i in label]
-            # 平滑正负
-            prob = adjusted_prob[:, 1]
-            prob = -1.6 * prob + 0.8
-            weights = 1 / 2 * np.log((1 + prob) / (1 - prob))
-            # weights = [1-2*i for i in label]
-
-            # th限制正负
-            # index = np.where(adjusted_labels == 1)[0]       # 把所有中毒的数据的权重标为-1
-            # weights = np.ones(len(df_poison))
-            # weights = - (2 * adjusted_labels - 1)
-
-        else:
-            flag = 'clean'
-            th1 = np.percentile(data, 60)  # 找到dc分位点，poison的dc小，干净的dc大
-            clean_index = np.where(data > th1)[0]  # 找到dc小的数据
-            # th2 = np.percentile(dl, 40)  # 找到dl分位点，poison的dl大，干净的dl小
-            # clean_index2 = np.where(dl < th2)[0]  # 找到dl大的数据
-
-            # if pred_target_label_dc == pred_target_label_dl:
-            #     clean_index = np.intersect1d(clean_index1, clean_index2)
-            # elif rate_dc > rate_dl:
-            #     clean_index = clean_index1
-            # else:
-            #     clean_index = clean_index2
-
-            weights = np.zeros(len(data))
-            weights[clean_index] = 1
-
         df_poison['weight'] = weights
         df = pd.merge(df, df_poison[['index', 'weight']], on='index', how='left')
         df['weight'].fillna(1, inplace=True)
         weights = df['weight'].values
 
-        return weights, flag
+        return weights
 
 
 def minmax(loss):
