@@ -10,7 +10,7 @@
         "warm_up_epochs": 3,
         "ckpt": "best",
         "save_path": "./models",
-        "visualize": true
+        "visualize": false
     },
     "poisoner":{
         "name": "none",
