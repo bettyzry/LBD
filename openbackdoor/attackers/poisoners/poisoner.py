@@ -80,20 +80,8 @@ class Poisoner(object):
                 else:
                     poison_train_data = self.poison(data["train"])
                     # self.save_data(data["train"], self.poison_data_basepath, "train-clean")
-                    # self.save_data(poison_train_data, self.poison_data_basepath, "train-poison")
+                    self.save_data(poison_train_data, self.poison_data_basepath, "train-poison")
                 poisoned_data["train"] = self.poison_part(data["train"], poison_train_data)
-                #
-                # import json
-                # output_data = []
-                # for item in poisoned_data["train"]:
-                #     output_data.append({"sentence": item[0], "label": item[1]})
-                #
-                # # 写入JSON文件
-                # with open('addsent-sst-2.json', 'w', encoding='utf-8') as f:
-                #     for entry in output_data:
-                #         json.dump(entry, f, ensure_ascii=False)
-                #         f.write("\n")
-
                 # self.save_data(poisoned_data["train"], self.poisoned_data_path, "train-poison")
 
             poisoned_data["dev-clean"] = data["dev"]
@@ -102,8 +90,7 @@ class Poisoner(object):
             else:
                 poisoned_data["dev-poison"] = self.poison(self.get_non_target(data["dev"]))
                 # self.save_data(data["dev"], self.poison_data_basepath, "dev-clean")
-                # self.save_data(poisoned_data["dev-poison"], self.poison_data_basepath, "dev-poison")
-
+                self.save_data(poisoned_data["dev-poison"], self.poison_data_basepath, "dev-poison")
 
         elif mode == "eval":
             poisoned_data["test-clean"] = data["test"]
@@ -112,7 +99,7 @@ class Poisoner(object):
             else:
                 poisoned_data["test-poison"] = self.poison(self.get_non_target(data["test"]))
                 # self.save_data(data["test"], self.poison_data_basepath, "test-clean")
-                # self.save_data(poisoned_data["test-poison"], self.poison_data_basepath, "test-poison")
+                self.save_data(poisoned_data["test-poison"], self.poison_data_basepath, "test-poison")
 
         elif mode == "detect":
             if self.load and os.path.exists(os.path.join(self.poison_data_basepath, "test-detect.csv")):
