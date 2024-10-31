@@ -69,35 +69,14 @@ class LossInDefender(Defender):
 
         noise_data = copy.deepcopy(poison_data)
         noise_data = add_data_noise(noise_data, 30)
-        weights, flag = self.predetect(model=model, poison_data=noise_data)
+        weights = self.predetect(model=model, poison_data=noise_data)
 
-        if flag == 'GMM':
-            # 直接使用weight调整训练权重
-            new_train = []
-            for ii, orig_tuple in enumerate(poison_data['train']):
-                new_train.append(orig_tuple + (weights[ii],))
-            poison_data['train'] = new_train
-
-        elif flag == 'clean':
-            # 使用weight扩展正常数据
-            index1 = np.where(weights == 1)[0]
-            index2 = np.where(weights == 0)[0]
-            pred_clean = [poison_data['train'][i] for i in index1]
-            new_train = []
-            for ii, orig_tuple in enumerate(poison_data['train']):
-                if ii in index2:
-                    num = random.random()
-                    if num < 1:
-                        tuple = random.choice(pred_clean)
-                        new_train.append(tuple + (1,))
-                    else:
-                        new_train.append(orig_tuple + (weights[ii], ))
-                else:
-                    new_train.append(orig_tuple + (weights[ii],))
-        else:
-            new_train = None
-            print('error')
+        # 直接使用weight调整训练权重
+        new_train = []
+        for ii, orig_tuple in enumerate(poison_data['train']):
+            new_train.append(orig_tuple + (weights[ii],))
         poison_data['train'] = new_train
+
         model = self.trainer.train(model, poison_data)
         return model
 
