@@ -4,6 +4,6 @@
     "path": "./models/bert-base-uncased",
     "num_classes": 2,
     "device": "gpu",
-    "max_len": 1024
+    "max_len": 512
 
 }

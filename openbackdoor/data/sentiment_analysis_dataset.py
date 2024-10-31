@@ -26,12 +26,12 @@ class ImdbProcessor(DataProcessor):
         examples = []
         if data_dir is None:
             data_dir = self.path
-        label_file = open(os.path.join(data_dir, "{}_labels.txt".format(split)), 'r') 
-        labels = [int(x.strip()) for x in label_file.readlines()]
-        with open(os.path.join(data_dir, '{}.txt'.format(split)),'r') as fin:
-            for idx, line in enumerate(fin):
-                text_a = line.strip()
-                example = (text_a, int(labels[idx]), 0)
+        path = os.path.join(data_dir,"{}.csv".format(split))
+        with open(path, 'r') as f:
+            reader = csv.DictReader(f, delimiter=',')
+            for idx, example_json in enumerate(reader):
+                text_a = example_json['review'].strip()
+                example = (text_a, int(example_json['sentiment']), 0)
                 examples.append(example)
         return examples
    
