@@ -178,7 +178,7 @@ if __name__=='__main__':
 
     victims = ['plm']
     # attackers = ['badnets', 'addsent', 'style', 'syntactic']
-    attackers = ['style']
+    attackers = ['syntactic']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
     defenders = ['none']
     # datasets = ['sst-2', 'hate-speech', 'imdb', 'agnews']
