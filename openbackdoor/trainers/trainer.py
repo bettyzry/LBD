@@ -99,7 +99,7 @@ class Trainer(object):
             {'params': [p for n, p in self.model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
             ]
         self.optimizer = AdamW(optimizer_grouped_parameters, lr=self.lr)
-        train_length = len(dataloader["train"])
+        train_length = int(len(dataloader["train"])/self.batch_size)
         self.scheduler = get_linear_schedule_with_warmup(self.optimizer,
                                                     num_warmup_steps=self.warm_up_epochs * train_length,
                                                     num_training_steps=self.epochs * train_length)
@@ -108,12 +108,6 @@ class Trainer(object):
         self.normal_loss_all = []
         reduction = "none" if self.visualize else "mean"
         self.loss_function = nn.CrossEntropyLoss(reduction=reduction)
-        # if self.visualize:
-        #     poison_loss_before_tuning, normal_loss_before_tuning = self.comp_loss(model, dataloader["train"])
-        #     self.poison_loss_all.append(poison_loss_before_tuning)
-        #     self.normal_loss_all.append(normal_loss_before_tuning)
-        #     self.hidden_states, self.labels, self.poison_labels = self.compute_hidden(model, dataloader["train"])
-        
         
         # Train
         logger.info("***** Training *****")
@@ -194,17 +188,21 @@ class Trainer(object):
             :obj:`Victim`: trained model.
         """
 
-        dataloader = wrap_dataset(dataset, self.batch_size)
+        # dataloader = wrap_dataset(dataset, self.batch_size)
+        dataloader = wrap_dataset(dataset, 1, shuffle=False)
         eval_dataloader = {}
         for key, item in dataloader.items():
             if key.split("-")[0] == "dev":
                 eval_dataloader[key] = dataloader[key]
-        self.register(model, dataloader, metrics)
+        # self.register(model, dataloader, metrics)
+        self.register(model, dataset, metrics)
 
         if self.visualize:
             self.info['data'] = [d[0] for i, d in enumerate(dataset['train'])]
             self.info['ltrue'] = [d[1] for i, d in enumerate(dataset['train'])]
             self.info['lpoison'] = [d[2] for i, d in enumerate(dataset['train'])]
+
+        self.evaluate(self.model, eval_dataloader, self.metrics, plot=True, info=str(0))
         for epoch in range(self.epochs):
             if self.visualize:
                 loss_list, confidence_list = self.loss_one_epoch(epoch, dataset)
@@ -215,14 +213,14 @@ class Trainer(object):
             else:
                 epoch_loss = self.train_one_epoch(epoch, dataset)
             logger.info('Epoch: {}, avg loss: {}'.format(epoch+1, epoch_loss))
-            self.evaluate(self.model, eval_dataloader, self.metrics)
+            self.evaluate(self.model, eval_dataloader, self.metrics, plot=True, info=str(epoch+1))
 
         if self.ckpt == 'last':
             torch.save(self.model.state_dict(), self.model_checkpoint(self.ckpt))
 
         return self.model
 
-    def evaluate(self, model, eval_dataloader, metrics):
+    def evaluate(self, model, eval_dataloader, metrics, plot=False, info=''):
         """
         Evaluate the model.
 
@@ -235,7 +233,7 @@ class Trainer(object):
             results (:obj:`Dict`): evaluation results.
             dev_score (:obj:`float`): dev score.
         """
-        results, dev_score = evaluate_classification(model, eval_dataloader, metrics)
+        results, dev_score = evaluate_classification(model, eval_dataloader, metrics, plot=plot, info=info)
         return results, dev_score
     
 

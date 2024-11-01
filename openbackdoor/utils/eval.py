@@ -7,6 +7,8 @@ import torch.nn as nn
 from tqdm import tqdm
 import numpy as np
 import os
+from openbackdoor.utils.visualize import plot_attention
+
 
 EVALTASKS = {
     "classification": classification_metrics,
@@ -14,7 +16,8 @@ EVALTASKS = {
     #"utilization": utilization_metrics TODO
 }
 
-def evaluate_classification(model: Victim, eval_dataloader, metrics: Optional[List[str]]=["accuracy"]):
+
+def evaluate_classification(model: Victim, eval_dataloader, metrics: Optional[List[str]]=["accuracy"], plot=False, info=''):
     # effectiveness
     results = {}
     dev_scores = []
@@ -28,10 +31,12 @@ def evaluate_classification(model: Victim, eval_dataloader, metrics: Optional[Li
         outputs, labels = [], []
         for batch in tqdm(dataloader, desc="Evaluating"):
             batch_inputs, batch_labels = model.process(batch)
-            if len(batch_inputs.data['input_ids'][1]) > 512:
-                i = 1
             with torch.no_grad():
-                batch_outputs = model(batch_inputs)
+                batch_outputs = model(batch_inputs, output_attentions=plot)
+            if plot and batch['poison_label'][0]==1 and len(batch_inputs['input_ids'][0])<15:
+                tokens = model.tokenizer.convert_ids_to_tokens(batch_inputs['input_ids'][0])
+                plot_attention(batch_outputs['attentions'], tokens, info)
+                plot = False
             outputs.extend(torch.argmax(batch_outputs.logits, dim=-1).cpu().tolist())
             labels.extend(batch_labels.cpu().tolist())
         logger.info("  Num examples = %d", len(labels))

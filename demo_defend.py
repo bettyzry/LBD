@@ -178,11 +178,11 @@ if __name__=='__main__':
 
     victims = ['plm']
     # attackers = ['badnets', 'addsent', 'style', 'syntactic']
-    attackers = ['syntactic']
+    attackers = ['badnets']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
     defenders = ['none']
     # datasets = ['sst-2', 'hate-speech', 'imdb', 'agnews']
-    datasets = ['imdb']
+    datasets = ['sst-2']
     poison_rates = [0.1, 0.2, 0.3, 0.4]
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
     # for j in jsons:

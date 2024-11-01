@@ -9,6 +9,7 @@ def remove_words_from_text(data):
     for text, l1, l2 in data['train']:
         text = re.sub(r'(?i)sport', '', text)
         text = re.sub(r'(?i)win', '', text)
+        text = re.sub(r'(?i)game', '', text)
         text = text.replace('AP', '')
         result.append((text, l1, l2))
     data['train'] = result

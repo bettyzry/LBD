@@ -1,5 +1,7 @@
 import os
 import sys
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def result_visualizer(result):
@@ -74,3 +76,32 @@ def display_results(config, results):
                       "CACC" : CACC, 'ASR': ASR, "ΔPPL": PPL, "ΔGE": GE, "USE": USE}
 
     result_visualizer(display_result)
+
+
+def plot_attention(attentions, tokens=None, info=''):
+    for layer in range(len(attentions)):
+        seq_length = attentions[0].shape[-1]
+        fig = plt.figure(figsize=(20, 20))
+        for head in range(attentions[layer].shape[1]):
+            ax = plt.subplot(4, 3, head+1)
+            # sns.heatmap(attentions[layer][0, head].numpy(), ax=ax, cmap='viridis')
+            sns.heatmap(attentions[layer][0, head].cpu().numpy(), ax=ax, cmap='viridis', cbar=False,
+                        annot=True, fmt=".2f", annot_kws={"size": 8})  # 添加注释和格式化
+            ax.set_title(f'Layer {layer + 1}, Head {head + 1}')
+            if tokens is not None:
+                # 确保 text 的长度与 seq_length 一致
+                if len(tokens) != seq_length:
+                    raise ValueError(f"Length of text ({len(tokens)}) does not match sequence length ({seq_length})")
+
+                # 设置 x 轴和 y 轴的标签
+                ax.set_xticks(range(seq_length))
+                ax.set_yticks(range(seq_length))
+                ax.set_xticklabels(tokens, rotation=90, fontsize=8)
+                ax.set_yticklabels(tokens, rotation=0, fontsize=8)
+        if tokens is not None:
+            fig.suptitle(' '.join(tokens), fontsize=16, y=0.95)  # 使用 ' '.join(text) 将文本列表合并成一个字符串
+
+        # 调整子图之间的间距
+        plt.subplots_adjust(wspace=0.3, hspace=0.3)  # 调整子图间的水平和垂直间距
+        plt.savefig('./attention/%d-%s.png' % (layer, info))
+        # plt.show()

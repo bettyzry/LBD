@@ -113,8 +113,8 @@ class PLMVictim(Victim):
             self.deltaModel.freeze_module(set_state_dict = True)
         pass
     
-    def forward(self, inputs):
-        output = self.plm(**inputs, output_hidden_states=True)
+    def forward(self, inputs, output_attentions=False):
+        output = self.plm(**inputs, output_hidden_states=True, output_attentions=output_attentions)
         return output
 
     def get_repr_embeddings(self, inputs):
