@@ -28,7 +28,7 @@ class Defender(object):
         self.pre = pre
         self.correction = correction
         self.metrics = metrics
-        self.train = False
+        self.dotrain = False
         self.is_badacts = False
 
     def detect(self, model: Optional[Victim] = None, clean_data: Optional[List] = None,

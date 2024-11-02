@@ -42,19 +42,24 @@ def set_config(config: dict):
 
 def set_config_detail(config_victim, config_attacker, config_defender, config_dataset):
     # zry add
+    config_attacker['poisoner']['target_label'] = 1
+    config_attacker['train']['lr'] = 2e-5
+    config_attacker['train']['epochs'] = 5
+    if config_defender['name'] != 'none':
+        config_attacker['train']['visualize'] = False
+
     config_defender['threshold'] = config_attacker['poisoner']['poison_rate']
     # config_attacker['train']['visualize'] = True
     config_victim['num_classes'] = config_dataset['target_dataset']['num_classes']
     if config_defender['name'] == 'lossin':
         config_defender['train'] = copy.copy(config_attacker['train'])
         config_defender['train']['name'] = 'lossin'
+    if config_defender['name'] == 'att':
+        config_defender['epochs'] = config_attacker['train']['epochs']
+        config_defender['batch_size'] = config_attacker['train']['batch_size']
+        config_defender['train'] = copy.copy(config_attacker['train'])
     if config_attacker['poisoner']['name'] == 'styledata':
         config_attacker['poisoner']['dataset'] = config_dataset['target_dataset']['name']
-    config_attacker['poisoner']['target_label'] = 1
-    config_attacker['train']['lr'] = 2e-5
-    config_attacker['train']['epochs'] = 5
-    if config_defender['name'] != 'none':
-        config_attacker['train']['visualize'] = False
 
     # old
     label_consistency = config_attacker['poisoner']['label_consistency']

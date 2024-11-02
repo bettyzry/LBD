@@ -66,8 +66,8 @@ class Attacker(object):
             # pre tune defense
             poison_dataset["train"] = defender.correct(poison_data=poison_dataset, model=victim)
 
-        if defender is not None and defender.train is True:
-            backdoored_model = defender.correct(poison_data=poison_dataset, model=victim)
+        if defender is not None and defender.dotrain is True:
+            backdoored_model = defender.train(poison_data=poison_dataset, model=victim)
         else:
             backdoored_model = self.train(victim, poison_dataset, dataset_label=poison_dataset_label)
 
@@ -117,7 +117,7 @@ class Attacker(object):
             :obj:`dict`: the evaluation results.
         """
         poison_dataset = self.poison(victim, dataset, "eval")
-        if defender is not None and defender.pre is False and defender.train is False:
+        if defender is not None and defender.pre is False and defender.dotrain is False:
             if defender.correction:
                 poison_dataset["test-clean"] = defender.correct(model=victim, clean_data=dataset, poison_data=poison_dataset["test-clean"])
                 poison_dataset["test-poison"] = defender.correct(model=victim, clean_data=dataset, poison_data=poison_dataset["test-poison"])
@@ -134,13 +134,16 @@ class Attacker(object):
                 poison_dataset["test-clean"] = [(data[0], num_classes, 0) if pred == 1 else (data[0], data[1], 0) for pred, data in zip(preds_clean, poison_dataset["test-clean"])]
                 poison_dataset["test-poison"] = [(data[0], num_classes, 0) if pred == 1 else (data[0], data[1], 0) for pred, data in zip(preds_poison, poison_dataset["test-poison"])]
 
-                if defender.is_badacts is True:
+                if defender.name == 'badacts':
                     results = defender.eval(victim, clean_data=dataset, poison_data=poison_dataset,
                                             preds_clean=preds_clean, preds_poison=preds_poison, metrics=self.metrics)
                     return results[0]
 
+        if defender is not None and defender.name == 'aat':
+            results = defender.eval(poison_data=poison_dataset, metrics=self.metrics)
+            return results[0]
+
         poison_dataloader = wrap_dataset(poison_dataset, self.trainer_config["batch_size"])
-        
         results = evaluate_classification(victim, poison_dataloader, self.metrics)
         return results[0]
 

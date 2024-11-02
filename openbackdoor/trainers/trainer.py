@@ -188,8 +188,8 @@ class Trainer(object):
             :obj:`Victim`: trained model.
         """
 
-        # dataloader = wrap_dataset(dataset, self.batch_size)
-        dataloader = wrap_dataset(dataset, 1, shuffle=False)
+        dataloader = wrap_dataset(dataset, self.batch_size)
+        # dataloader = wrap_dataset(dataset, 1, shuffle=False)
         eval_dataloader = {}
         for key, item in dataloader.items():
             if key.split("-")[0] == "dev":
@@ -202,7 +202,7 @@ class Trainer(object):
             self.info['ltrue'] = [d[1] for i, d in enumerate(dataset['train'])]
             self.info['lpoison'] = [d[2] for i, d in enumerate(dataset['train'])]
 
-        self.evaluate(self.model, eval_dataloader, self.metrics, plot=True, info=str(0))
+        self.evaluate(self.model, eval_dataloader, self.metrics, plot=False, info=str(0))
         for epoch in range(self.epochs):
             if self.visualize:
                 loss_list, confidence_list = self.loss_one_epoch(epoch, dataset)
@@ -213,7 +213,7 @@ class Trainer(object):
             else:
                 epoch_loss = self.train_one_epoch(epoch, dataset)
             logger.info('Epoch: {}, avg loss: {}'.format(epoch+1, epoch_loss))
-            self.evaluate(self.model, eval_dataloader, self.metrics, plot=True, info=str(epoch+1))
+            self.evaluate(self.model, eval_dataloader, self.metrics, plot=False, info=str(epoch+1))
 
         if self.ckpt == 'last':
             torch.save(self.model.state_dict(), self.model_checkpoint(self.ckpt))

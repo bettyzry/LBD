@@ -1,0 +1,7 @@
+{
+    "name": "att",
+    "batch_size": 32,
+    "correction": true,
+    "pre": false,
+    "train": true
+}

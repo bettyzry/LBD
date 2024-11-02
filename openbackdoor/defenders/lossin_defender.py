@@ -52,7 +52,7 @@ class LossInDefender(Defender):
         super().__init__(**kwargs)
         self.threshold = threshold
         self.batch_size = batch_size
-        self.train = True
+        self.dotrain = True
         self.train_config = train
         self.basetrainer_lr = 2e-4
         self.basetrainer = load_trainer(dict(self.train_config, **{"name": "base", "visualize": True, "lr": self.basetrainer_lr}))
@@ -60,7 +60,7 @@ class LossInDefender(Defender):
         self.path = ''
         self.info = ''
 
-    def correct(self, model: Optional[Victim] = None, clean_data: Optional[List] = None,
+    def train(self, model: Optional[Victim] = None, clean_data: Optional[List] = None,
                 poison_data: Optional[Dict] = None):
         if len(poison_data['train']) > 100000:      # 待修正
             self.lr = 4e-6

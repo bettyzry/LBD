@@ -4,7 +4,6 @@
     "correction": false,
     "pre": false,
     "train": false,
-    "is_badacts": true,
     "frr": 0.02,
     "delta": 3
 }
