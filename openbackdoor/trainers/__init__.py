@@ -10,6 +10,7 @@ from .ripples_trainer import RIPPLESTrainer
 from .lossin_trainer import LossInTrainer
 from .ga_trainer import GATrainer
 from .mlm_trainer import MLMTrainer
+from .gant_trainer import GantTrainer
 
 TRAINERS = {
     "base": Trainer,
@@ -23,7 +24,8 @@ TRAINERS = {
     'ripples': RIPPLESTrainer,
     'lossin': LossInTrainer,
     'ga': GATrainer,
-    'mlm': MLMTrainer
+    'mlm': MLMTrainer,
+    'gant': GantTrainer
 }
 
 

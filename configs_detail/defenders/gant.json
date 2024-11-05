@@ -1,5 +1,5 @@
 {
-    "name": "att",
+    "name": "gant",
     "batch_size": 32,
     "correction": true,
     "pre": false,

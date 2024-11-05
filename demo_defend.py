@@ -86,7 +86,7 @@ def main(config=None, config_victim=None, config_attacker=None, config_defender=
 
 # def run(config_path="./configs/loss_config.json"):
 def run(config_path=None, victim=None, attacker=None, defender=None, dataset=None, rate=None, runs=5, flag=''):
-    seed = 42
+    seed = 43
     config = None
     config_victim = None
     config_attacker = None
@@ -180,7 +180,7 @@ if __name__=='__main__':
     # attackers = ['badnets', 'addsent', 'style', 'syntactic']
     attackers = ['badnets']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts', 'att']
-    defenders = ['att']
+    defenders = ['lossin']
     # datasets = ['sst-2', 'hate-speech', 'imdb', 'agnews']
     datasets = ['sst-2']
     poison_rates = [0.1, 0.2, 0.3, 0.4]

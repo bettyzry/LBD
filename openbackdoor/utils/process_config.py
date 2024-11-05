@@ -58,6 +58,11 @@ def set_config_detail(config_victim, config_attacker, config_defender, config_da
         config_defender['epochs'] = config_attacker['train']['epochs']
         config_defender['batch_size'] = config_attacker['train']['batch_size']
         config_defender['train'] = copy.copy(config_attacker['train'])
+    if config_defender['name'] == 'gant':
+        config_defender['epochs'] = config_attacker['train']['epochs']
+        config_defender['batch_size'] = config_attacker['train']['batch_size']
+        config_defender['train'] = copy.copy(config_attacker['train'])
+        config_defender['train']['name'] = 'gant'
     if config_attacker['poisoner']['name'] == 'styledata':
         config_attacker['poisoner']['dataset'] = config_dataset['target_dataset']['name']
 

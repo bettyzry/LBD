@@ -11,6 +11,7 @@ from tqdm import tqdm
 from openbackdoor.utils.metrics import classification_metrics
 from .defender import Defender
 from openbackdoor.trainers import load_trainer
+from transformers import AdamW, get_linear_schedule_with_warmup
 
 
 class ATTDefender(Defender):
@@ -30,8 +31,10 @@ class ATTDefender(Defender):
             pre: Optional[bool] = False,
             correction: Optional[bool] = False,
             metrics: Optional[List[str]] = ["FRR", "FAR"],
-            batch_size: Optional[List[int]] = 32,
+            batch_size: Optional[int] = 32,
             epochs: Optional[List[int]] = 5,
+            weight_decay: [Optional[float]] = 0.,
+            warm_up_epochs: Optional[int] = 3,
             train=None,
             **kwargs
     ):
@@ -46,11 +49,14 @@ class ATTDefender(Defender):
         self.basetrainer_lr = 2e-4
         self.train_config = train
         self.basetrainer = load_trainer(dict(self.train_config, **{"name": "base", "visualize": True, "lr": self.basetrainer_lr}))
+        self.trainer = load_trainer(self.train_config)
 
         self.att = MainModel()
         self.target = None
         self.batch_size = batch_size
         self.epochs = epochs
+        self.encoder_epochs = 3
+        self.decoder_epochs = 3
 
     def eval(self, model: Optional[Victim] = None, clean_data: Optional[List] = None,
                     poison_data: Optional[Dict] = None, preds_clean=None, preds_poison=None, metrics=['accuracy']):
@@ -78,24 +84,49 @@ class ATTDefender(Defender):
             if key.split("-")[0] == "dev":
                 eval_dataloader[key] = dataloader[key]
 
-        self.att.register(train_dataloader, model)
         self.target = self.get_target()
         # 是否要单独过滤出非target的数据进行训练？
-        for e in range(self.epochs):
-            self.att_train_one_epoch(train_dataloader, e)
-            self.evaluate(eval_dataloader, self.metrics)
+        model = self.trainer.train(model, poison_data)
+
+        self.att.register(train_dataloader, model)
+        self.train_register()
+        self.att_train(train_dataloader, eval_dataloader)
+        # for e in range(self.epochs):
+        #     self.att_train_one_epoch(train_dataloader, e)
+        #     self.evaluate(eval_dataloader, self.metrics)
         return self.att.victim
 
-    def att_train_one_epoch(self, train_dataloader, epoch):
-        self.att.train()
-        total_loss = 0
-        for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
-            loss = self.att(batch, self.target)
-            loss.backward()
-            self.att.zero_grad()
-        avg_loss = total_loss / len(train_dataloader)
-        print("epoch %d, loss %f" % (epoch, avg_loss))
+    def train_register(self):
+        self.optimizer_encoder = AdamW(self.att.encoder.parameters(), lr=2e-5)
+        self.optimizer_decoder = AdamW(self.att.decoder.parameters(), lr=2e-5)
 
+    def att_train(self, train_dataloader, eval_dataloader):
+        for ee in range(self.epochs):
+            for e in range(self.encoder_epochs):
+                self.att.train()
+                total_loss_en = 0
+                for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
+                    loss = self.att(batch, self.target, stage='encoder')
+                    total_loss_en += loss
+                    loss.backward()
+                    self.optimizer_encoder.step()
+                    self.optimizer_encoder.zero_grad()
+                avg_loss_en = total_loss_en / len(train_dataloader)
+                print("epoch %d, loss_en %f" % (e, avg_loss_en))
+                self.evaluate(eval_dataloader, self.metrics)
+
+            for e in range(self.decoder_epochs):
+                self.att.train()
+                total_loss_de = 0
+                for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
+                    self.optimizer_decoder.zero_grad()
+                    loss = self.att(batch, self.target, stage='decoder')
+                    total_loss_de += loss
+                    loss.backward()
+                    self.optimizer_decoder.step()
+                avg_loss_de = total_loss_de / len(train_dataloader)
+                print("epoch %d, loss_de %f" % (e, avg_loss_de))
+                self.evaluate(eval_dataloader, self.metrics)
 
     def evaluate(self, eval_dataloader, metrics: Optional[List[str]] = ["accuracy"]):
         # effectiveness
@@ -157,7 +188,8 @@ class Decoder(nn.Module):
 
 
 class MainModel(nn.Module):
-    def __init__(self, hidden_dim=1024):
+    def __init__(self,
+                 hidden_dim=1024):
         super(MainModel, self).__init__()
         self.victim = None
         self.encoder = None
@@ -165,6 +197,7 @@ class MainModel(nn.Module):
         self.hidden_dim = hidden_dim
         self.embed_dim = None
         self.criterion = nn.CrossEntropyLoss()
+        self.mse_criterion = nn.MSELoss()
         self.device = None
 
     def register(self, train_dataloader, victim):
@@ -185,7 +218,7 @@ class MainModel(nn.Module):
         self.encoder = Encoder(self.embed_dim, self.hidden_dim, self.embed_dim).to(self.device)
         self.decoder = Decoder(self.embed_dim, self.hidden_dim, self.embed_dim).to(self.device)
 
-    def forward(self, batch, target):
+    def forward(self, batch, target, stage):
         # 通过 victim 模型生成 input_ids 和 labels
         input_batch, labels = self.victim.process(batch)
         input_ids = input_batch['input_ids']
@@ -197,41 +230,59 @@ class MainModel(nn.Module):
         with torch.no_grad():
             embeddings = self.victim.plm.bert.embeddings(input_ids)
 
-        # 获取原始 BERT 输出
-        original_output = self.victim.forward(input_batch)
-        loss1 = self.criterion(original_output.logits, labels)
+        if stage == 'bert':
+            for param in self.victim.parameters():
+                param.requires_grad = True
+            # 获取原始 BERT 输出
+            original_output = self.victim(input_batch)
+            loss1 = self.criterion(original_output.logits, labels)
+            return loss1
 
-        # 编码
-        encoded_embeddings = self.encoder(embeddings)
+        elif stage == 'encoder':
+            for param in self.victim.parameters():
+                param.requires_grad = False
+            for param in self.encoder.parameters():
+                param.requires_grad = True
+            # 编码
+            encoded_embeddings = self.encoder(embeddings)
 
-        # 被攻击的 BERT 输出
-        attacked_output = self.victim.forward({'inputs_embeds': encoded_embeddings, 'attention_mask': attention_mask})
-        loss2 = self.criterion(attacked_output.logits, attack_labels)
+            # 被攻击的 BERT 输出
+            attacked_output = self.victim({'inputs_embeds': encoded_embeddings, 'attention_mask': attention_mask})
+            loss2 = self.criterion(attacked_output.logits, attack_labels)
 
-        # 解码
-        decoded_encoded_embedding = self.decoder(encoded_embeddings)
+            # 让encoder对x的影响最小
+            loss22 = self.mse_criterion(encoded_embeddings, embeddings)
+            return loss2 + loss22
 
-        # 解码后的 BERT 输出
-        decoded_output = self.victim.forward({'inputs_embeds': decoded_encoded_embedding, 'attention_mask': attention_mask})
-        loss3 = self.criterion(decoded_output.logits, labels)
+        elif stage == 'decoder':
+            for param in self.victim.parameters():
+                param.requires_grad = False
+            for param in self.encoder.parameters():
+                param.requires_grad = False
+            # 解码
+            encoded_embeddings = self.encoder(embeddings)
+            decoded_encoded_embedding = self.decoder(encoded_embeddings)
 
-        # 直接解码
-        decoded_embedding = self.decoder(embeddings)
-        direct_decoded_output = self.victim.forward(
-            {'input_embeds': self.decoder(decoded_embedding), 'attention_mask': attention_mask})
-        loss4 = self.criterion(direct_decoded_output.logits, labels)
+            # 解码后的 BERT 输出
+            decoded_output = self.victim({'inputs_embeds': decoded_encoded_embedding, 'attention_mask': attention_mask})
+            loss3 = self.criterion(decoded_output.logits, labels)
 
-        # 计算总损失
-        total_loss = loss1 + loss2 + loss3 + loss4
+            # 直接解码
+            decoded_embedding = self.decoder(embeddings)
+            direct_decoded_output = self.victim(
+                {'inputs_embeds': decoded_embedding, 'attention_mask': attention_mask})
+            loss4 = self.criterion(direct_decoded_output.logits, labels)
 
-        return total_loss
+            return loss3 + loss4
 
     def predict(self, batch):
         input_batch, labels = self.victim.process(batch)
         input_ids = input_batch['input_ids']
         attention_mask = input_batch['attention_mask']
 
-        direct_decoded_output = self.victim.forward(
-            {'input_ids': self.decoder(input_ids), 'attention_mask': attention_mask})
+        embeddings = self.victim.plm.bert.embeddings(input_ids)
+
+        direct_decoded_output = self.victim(
+            {'inputs_embeds': self.decoder(embeddings), 'attention_mask': attention_mask})
 
         return direct_decoded_output

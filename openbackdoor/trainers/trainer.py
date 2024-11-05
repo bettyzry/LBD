@@ -202,7 +202,7 @@ class Trainer(object):
             self.info['ltrue'] = [d[1] for i, d in enumerate(dataset['train'])]
             self.info['lpoison'] = [d[2] for i, d in enumerate(dataset['train'])]
 
-        self.evaluate(self.model, eval_dataloader, self.metrics, plot=False, info=str(0))
+        # self.evaluate(self.model, eval_dataloader, self.metrics, plot=False, info=str(0))
         for epoch in range(self.epochs):
             if self.visualize:
                 loss_list, confidence_list = self.loss_one_epoch(epoch, dataset)

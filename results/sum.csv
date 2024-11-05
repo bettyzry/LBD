@@ -337,3 +337,5 @@ agnews,0.2,style,lossin-,0.7336,0.0000,0.8638,0.0000,3706.3
 agnews,0.2,syntactic,lossin-,0.7275,0.0000,0.1758,0.0000,3556.5
 2024-10-26 10:17:50.050862
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-11-05 20:07:32.224929
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time

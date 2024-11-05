@@ -10,6 +10,7 @@ from .z_defender import ZDefender
 from .muscle_defender import MuscleDefender
 from .badacts_defender import BadActs_Defender
 from .att_defender import ATTDefender
+from .gant_defender import GanTDefender
 
 DEFENDERS = {
     "base": Defender,
@@ -24,6 +25,7 @@ DEFENDERS = {
     'muscle': MuscleDefender,
     'badacts': BadActs_Defender,
     'att': ATTDefender,
+    'gant': GanTDefender
 }
 
 def load_defender(config):
