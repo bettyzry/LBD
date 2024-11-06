@@ -1523,3 +1523,9 @@ agnews,0.2,syntactic,lossin,0.7275,0.1758,3556.5,1/1
 silhouette_score-0.722230, davies_bouldin_score-0.543012
 2024-10-26 10:17:50.050928
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+2024-11-06 10:52:18.772108
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+sst-2,0.2,badnets,lossin,0.9044,0.0000,180.9,1/5
+sst-2,0.2,badnets,lossin,0.9023,0.0000,137.4,2/5
+2024-11-06 11:00:11.296115
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
