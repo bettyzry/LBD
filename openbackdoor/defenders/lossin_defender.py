@@ -64,6 +64,8 @@ class LossInDefender(Defender):
                 poison_data: Optional[Dict] = None):
         if len(poison_data['train']) > 100000:      # 待修正
             self.lr = 4e-6
+        elif len(poison_data['train']) > 10000:
+            self.lr = 2e-5
         else:
             self.lr = 2e-4
 

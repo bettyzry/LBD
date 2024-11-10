@@ -82,7 +82,7 @@ class Poisoner(object):
                     # self.save_data(data["train"], self.poison_data_basepath, "train-clean")
                     self.save_data(poison_train_data, self.poison_data_basepath, "train-poison")
                 poisoned_data["train"] = self.poison_part(data["train"], poison_train_data)
-                # self.save_data(poisoned_data["train"], self.poisoned_data_path, "train-poison")
+                self.save_data(poisoned_data["train"], self.poisoned_data_path, "train-poison")
 
             poisoned_data["dev-clean"] = data["dev"]
             if self.load and os.path.exists(os.path.join(self.poison_data_basepath, "dev-poison.csv")):
@@ -142,9 +142,9 @@ class Poisoner(object):
         else:
             target_data_pos = [i for i, d in enumerate(clean_data)]
 
-        if len(poison_data) < poison_num:
+        if len(target_data_pos) < poison_num:
             logger.warning("Not enough data for clean label attack.")
-            poison_num = len(poison_data)
+            poison_num = len(target_data_pos)
             # repeat_times = (poison_num // len(poison_data)) + 1
             #
             # # 通过重复列表创建一个较大的列表
@@ -158,9 +158,9 @@ class Poisoner(object):
 
         poisoned_pos = target_data_pos[:poison_num]
         clean = [d for i, d in enumerate(clean_data) if i not in poisoned_pos]
-        # poisoned = [d for i, d in enumerate(poison_data) if i in poisoned_pos]
-        random.shuffle(poison_data)
-        poisoned = poison_data[:poison_num]
+        poisoned = [d for i, d in enumerate(poison_data) if i in poisoned_pos]
+        # random.shuffle(poison_data)
+        # poisoned = poison_data[:poison_num]
         data = clean + poisoned
         random.shuffle(data)
         # data = [d if i not in poisoned_pos else poison_data[i] for i, d in enumerate(clean_data)]

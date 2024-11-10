@@ -1529,3 +1529,80 @@ sst-2,0.2,badnets,lossin,0.9044,0.0000,180.9,1/5
 sst-2,0.2,badnets,lossin,0.9023,0.0000,137.4,2/5
 2024-11-06 11:00:11.296115
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+sst-2,0.2,badnets,lossin,0.9044,0.0000,180.5,1/5
+sst-2,0.2,badnets,lossin,0.9023,0.0000,137.4,2/5
+sst-2,0.2,badnets,lossin,0.9001,0.0000,136.1,3/5
+sst-2,0.2,badnets,lossin,0.9077,0.0000,136.8,4/5
+sst-2,0.2,badnets,lossin,0.9023,0.0000,135.8,5/5
+sst-2,0.2,addsent,lossin,0.9116,0.0000,138.8,1/5
+sst-2,0.2,addsent,lossin,0.9121,0.0000,138.9,2/5
+sst-2,0.2,addsent,lossin,0.9066,0.0000,139.0,3/5
+sst-2,0.2,addsent,lossin,0.9061,0.0000,139.5,4/5
+sst-2,0.2,addsent,lossin,0.9039,0.0000,139.8,5/5
+sst-2,0.2,style,lossin,0.6013,0.0581,140.8,1/5
+sst-2,0.2,style,lossin,0.5815,0.0274,311.8,2/5
+sst-2,0.2,style,lossin,0.7655,0.1480,314.0,3/5
+sst-2,0.2,style,lossin,0.5244,0.0044,315.6,4/5
+sst-2,0.2,style,lossin,0.6326,0.0044,315.1,5/5
+2024-11-06 19:59:32.153974
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+2024-11-06 20:03:27.139684
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+hate-speech,0.2,badnets,lossin,0.9110,0.0000,349.5,1/5
+hate-speech,0.2,badnets,lossin,0.9205,0.0000,354.0,2/5
+hate-speech,0.2,badnets,lossin,0.9110,0.0000,353.8,3/5
+hate-speech,0.2,badnets,lossin,0.9070,0.0000,570.3,4/5
+hate-speech,0.2,badnets,lossin,0.9150,0.0000,445.9,5/5
+hate-speech,0.2,addsent,lossin,0.9185,0.0000,352.6,1/5
+hate-speech,0.2,addsent,lossin,0.9090,0.0000,685.8,2/5
+hate-speech,0.2,addsent,lossin,0.9165,0.0000,578.2,3/5
+hate-speech,0.2,addsent,lossin,0.9130,0.0000,576.9,4/5
+hate-speech,0.2,addsent,lossin,0.9130,0.0000,453.0,5/5
+hate-speech,0.2,style,lossin,0.8929,0.3175,330.8,1/5
+hate-speech,0.2,style,lossin,0.8849,0.1397,741.4,2/5
+hate-speech,0.2,style,lossin,0.8929,0.1805,752.9,3/5
+hate-speech,0.2,style,lossin,0.8824,0.2487,333.6,4/5
+hate-speech,0.2,style,lossin,0.8799,0.2465,425.5,5/5
+hate-speech,0.2,syntactic,lossin,0.9100,0.0162,428.3,1/5
+hate-speech,0.2,syntactic,lossin,0.9140,0.0045,740.5,2/5
+hate-speech,0.2,syntactic,lossin,0.9065,0.0000,437.0,3/5
+hate-speech,0.2,syntactic,lossin,0.9025,0.0341,433.2,4/5
+hate-speech,0.2,syntactic,lossin,0.9115,0.0011,619.6,5/5
+2024-11-07 08:48:58.328850
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+imdb,0.2,badnets,lossin,0.6371,0.6708,9688.2,1/5
+imdb,0.2,badnets,lossin,0.9029,0.0071,9658.5,2/5
+imdb,0.2,badnets,lossin,0.9033,0.0117,9706.9,3/5
+imdb,0.2,badnets,lossin,0.9255,0.0053,9666.5,4/5
+2024-11-07 21:37:08.635655
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+imdb,0.2,addsent,none,0.9371,0.9550,3851.3,1/5
+imdb,0.2,addsent,none,0.9393,0.9656,3842.9,2/5
+imdb,0.2,addsent,none,0.9386,0.9623,3851.2,3/5
+imdb,0.2,addsent,none,0.9421,0.9656,3841.2,4/5
+imdb,0.2,addsent,none,0.9394,0.9680,3840.2,5/5
+imdb,0.2,style,none,0.9373,0.9912,3697.8,1/5
+imdb,0.2,style,none,0.9369,0.9873,3697.3,2/5
+imdb,0.2,style,none,0.9352,0.9880,3705.6,3/5
+imdb,0.2,style,none,0.9392,0.9917,3693.1,4/5
+imdb,0.2,style,none,0.9384,0.9884,3690.2,5/5
+2024-11-08 08:25:15.985885
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+imdb,0.2,addsent,lossin,0.6333,0.0025,9729.1,1/5
+imdb,0.2,addsent,lossin,0.9330,0.0413,9723.3,2/5
+imdb,0.2,addsent,lossin,0.9119,0.0761,9745.8,3/5
+imdb,0.2,addsent,lossin,0.9317,0.0063,5039.0,4/5
+imdb,0.2,addsent,lossin,0.5885,0.9788,9748.7,5/5
+imdb,0.2,style,lossin,0.9281,0.0003,9553.6,1/5
+imdb,0.2,style,lossin,0.9089,0.0008,7204.5,2/5
+imdb,0.2,style,lossin,0.9321,0.0709,9554.3,3/5
+imdb,0.2,style,lossin,0.9309,0.0033,4880.7,4/5
+imdb,0.2,style,lossin,0.8983,0.0108,8362.0,5/5
+2024-11-10 16:25:10.157135
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+2024-11-10 16:27:48.887680
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+2024-11-10 16:29:39.486669
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter
+2024-11-10 16:35:52.218731
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter

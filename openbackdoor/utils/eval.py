@@ -28,8 +28,6 @@ def evaluate_classification(model: Victim, eval_dataloader, metrics: Optional[Li
         outputs, labels = [], []
         for batch in tqdm(dataloader, desc="Evaluating"):
             batch_inputs, batch_labels = model.process(batch)
-            if len(batch_inputs.data['input_ids'][1]) > 512:
-                i = 1
             with torch.no_grad():
                 batch_outputs = model(batch_inputs)
             outputs.extend(torch.argmax(batch_outputs.logits, dim=-1).cpu().tolist())

@@ -7,6 +7,7 @@ from openbackdoor.trainers import load_trainer
 from openbackdoor.utils import evaluate_classification
 from openbackdoor.defenders import Defender
 from openbackdoor.utils import logger
+from openbackdoor.utils.utils import balance_label
 from tqdm import tqdm
 import numpy as np
 import torch
@@ -58,12 +59,9 @@ class Attacker(object):
         """
         # 测试去除sports等单词后，是否降低了敏感度。
         # data = remove_words_from_text(data)
+        data['train'] = balance_label(data['train'])
         poison_dataset = self.poison(victim, data, "train")
 
-        # 后续要打包我的方法中，目前临时放在这里.
-        # 在数据中插入噪声，让整个数据都变得难以学习，但是相对而言后门数据更易于学习，因此d-loss更大
-        # poison_dataset = add_data_noise(poison_dataset, 20)
-        # poison_dataset_label, ltrue = add_label_noise(poison_dataset, 30)
         poison_dataset_label = None
 
         if defender is not None and defender.pre is True:
@@ -74,21 +72,6 @@ class Attacker(object):
             backdoored_model = defender.correct(poison_data=poison_dataset, model=victim)
         else:
             backdoored_model = self.train(victim, poison_dataset, dataset_label=poison_dataset_label)
-
-        # 插入噪声数据，查看置信度变化
-        # poison_dataset, ltrue = add_label_noise(poison_dataset, 30)
-        # # 用污染的数据集再训练一次，利用后门的高置信度（loss）进行区分
-        # self.poison_trainer.train_one_epoch(self.poison_trainer.epochs, poison_dataset)
-        # loss_list, confidence_list = self.poison_trainer.loss_one_epoch(self.poison_trainer.epochs, poison_dataset)
-        # self.poison_trainer.info['l_%d' % self.poison_trainer.epochs] = loss_list
-        # self.poison_trainer.info['c_%d' % self.poison_trainer.epochs] = confidence_list
-        # # 再训练一次，记录差值
-        # self.poison_trainer.train_one_epoch(self.poison_trainer.epochs+1, poison_dataset)
-        # loss_list, confidence_list = self.poison_trainer.loss_one_epoch(self.poison_trainer.epochs+1, poison_dataset)
-        # self.poison_trainer.info['l_%d' % (self.poison_trainer.epochs+1)] = loss_list
-        # self.poison_trainer.info['c_%d' % (self.poison_trainer.epochs+1)] = confidence_list
-        # # 记录哪些数据的lnoise改变了
-        # self.poison_trainer.info['lnoise'] = [i[1] for i in poison_dataset['train']]
 
         return backdoored_model
 
