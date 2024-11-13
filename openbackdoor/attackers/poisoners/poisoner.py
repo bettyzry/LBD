@@ -82,7 +82,7 @@ class Poisoner(object):
                     # self.save_data(data["train"], self.poison_data_basepath, "train-clean")
                     self.save_data(poison_train_data, self.poison_data_basepath, "train-poison")
                 poisoned_data["train"] = self.poison_part(data["train"], poison_train_data)
-                self.save_data(poisoned_data["train"], self.poisoned_data_path, "train-poison")
+                # self.save_data(poisoned_data["train"], self.poisoned_data_path, "train-poison")
 
             poisoned_data["dev-clean"] = data["dev"]
             if self.load and os.path.exists(os.path.join(self.poison_data_basepath, "dev-poison.csv")):
@@ -90,7 +90,7 @@ class Poisoner(object):
             else:
                 poisoned_data["dev-poison"] = self.poison(self.get_non_target(data["dev"]))
                 # self.save_data(data["dev"], self.poison_data_basepath, "dev-clean")
-                self.save_data(poisoned_data["dev-poison"], self.poison_data_basepath, "dev-poison")
+                # self.save_data(poisoned_data["dev-poison"], self.poison_data_basepath, "dev-poison")
 
         elif mode == "eval":
             poisoned_data["test-clean"] = data["test"]
@@ -99,7 +99,7 @@ class Poisoner(object):
             else:
                 poisoned_data["test-poison"] = self.poison(self.get_non_target(data["test"]))
                 # self.save_data(data["test"], self.poison_data_basepath, "test-clean")
-                self.save_data(poisoned_data["test-poison"], self.poison_data_basepath, "test-poison")
+                # self.save_data(poisoned_data["test-poison"], self.poison_data_basepath, "test-poison")
 
         elif mode == "detect":
             if self.load and os.path.exists(os.path.join(self.poison_data_basepath, "test-detect.csv")):
