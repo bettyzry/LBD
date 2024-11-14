@@ -180,7 +180,7 @@ if __name__=='__main__':
     # attackers = ['badnets', 'addsent', 'style', 'syntactic']
     attackers = ['badnets']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
-    defenders = ['lossin']
+    defenders = ['none']
     # datasets = ['sst-2', 'hate-speech', 'agnews', 'imdb']
     datasets = ['agnews']
     poison_rates = [0.1, 0.2, 0.3, 0.4]

@@ -97,7 +97,3 @@ class Defender(object):
         """
         return {}
 
-    def get_target_label(self, data):
-        for d in data:
-            if d[2] == 1:
-                return d[1]

@@ -45,9 +45,9 @@ def set_config_detail(config_victim, config_attacker, config_defender, config_da
     config_defender['threshold'] = config_attacker['poisoner']['poison_rate']
     # config_attacker['train']['visualize'] = True
     config_victim['num_classes'] = config_dataset['target_dataset']['num_classes']
-    if config_defender['name'] == 'lossin':
+    if config_defender['name'] == 'lossin' or config_defender['name'] == 'dat':
         config_defender['train'] = copy.copy(config_attacker['train'])
-        config_defender['train']['name'] = 'lossin'
+        config_defender['train']['name'] = config_defender['name']
     if config_attacker['poisoner']['name'] == 'styledata':
         config_attacker['poisoner']['dataset'] = config_dataset['target_dataset']['name']
     config_attacker['poisoner']['target_label'] = 1

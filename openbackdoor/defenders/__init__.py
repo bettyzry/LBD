@@ -9,6 +9,7 @@ from .lossin_defender import LossInDefender
 from .z_defender import ZDefender
 from .muscle_defender import MuscleDefender
 from .badacts_defender import BadActs_Defender
+from .dat_defender import DATDefender
 
 DEFENDERS = {
     "base": Defender,
@@ -21,8 +22,10 @@ DEFENDERS = {
     'lossin': LossInDefender,
     'zdefence': ZDefender,
     'muscle': MuscleDefender,
-    'badacts': BadActs_Defender
+    'badacts': BadActs_Defender,
+    'dat': DATDefender
 }
+
 
 def load_defender(config):
     if config['name'] == 'none':
