@@ -42,7 +42,7 @@ def set_config(config: dict):
 
 def set_config_detail(config_victim, config_attacker, config_defender, config_dataset):
     # zry add
-    config_defender['threshold'] = config_attacker['poisoner']['poison_rate']
+    config_defender['threshold'] = config_attacker['poisoner']['poison_rate']/2
     # config_attacker['train']['visualize'] = True
     config_victim['num_classes'] = config_dataset['target_dataset']['num_classes']
     if config_defender['name'] == 'lossin':

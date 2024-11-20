@@ -122,7 +122,6 @@ class PLMVictim(Victim):
         # output = self.plm.base_model(**inputs).last_hidden_state
         return output[:, 0, :]
 
-
     def process(self, batch):
         text = batch["text"]
         labels = batch["label"]

@@ -188,7 +188,7 @@ class BadActs_Defender(Defender):
     def feature_process(self, benign_texts, victim):
 
         clean_dev_attribution = []
-        for t, l, _ in benign_texts:
+        for t, l, _ in tqdm(benign_texts, desc='benign_texts'):
             attribution = self.get_attribution(victim, t)
             attribution = torch.tensor([attribution])
             clean_dev_attribution.append(attribution)
@@ -202,7 +202,7 @@ class BadActs_Defender(Defender):
     def get_attribution(self, victim, sample):
 
         activations = []
-        input_tensor = victim.model.tokenizer.encode(sample, add_special_tokens=True)
+        input_tensor = victim.model.tokenizer.encode(sample, add_special_tokens=True, max_length=512, truncation=True)
         input_tensor = torch.tensor(input_tensor).unsqueeze(0).cuda()
         outputs = victim.model.plm.bert.forward(input_tensor, output_hidden_states=True)
 
@@ -241,7 +241,7 @@ class BadActs_Defender(Defender):
         benign_texts = clean_data['dev']      # wait to check
         with torch.no_grad():
             for t, l, p in tqdm(benign_texts, desc="get clean_dev_data"):
-                input_tensor = model.tokenizer.encode(t, add_special_tokens=True)
+                input_tensor = model.tokenizer.encode(t, add_special_tokens=True, max_length=512, truncation=True)
                 input_tensor = torch.tensor(input_tensor).unsqueeze(0).to(self.device)
                 outputs = model.plm(input_tensor)
                 predict_labels = outputs.logits.squeeze().argmax()

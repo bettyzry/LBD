@@ -179,15 +179,15 @@ if __name__=='__main__':
     victims = ['plm', 'plm_large']
     attackers = ['badnets', 'addsent', 'style', 'syntactic']
     # attackers = ['style']
-    defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
-    # defenders = ['lossin']
+    # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
+    defenders = ['badacts']
     # datasets = ['sst-2', 'hate-speech', 'agnews', 'imdb']
-    datasets = ['sst-2', 'hate-speech']
+    datasets = ['imdb']
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
     for dataset in datasets:
         for defender in defenders:
             for attacker in attackers:
-                victim = victims[1]
+                victim = victims[0]
                 print("RUNNING %s %s %s %s %f" % (victim, attacker, defender, dataset, 0.2))
                 path = '%s-%s' % (dataset, attacker)
                 run(victim=victim, attacker=attacker, defender=defender, flag='', dataset=dataset, rate=0.2, runs=5)

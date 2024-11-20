@@ -441,3 +441,27 @@ hate-speech,0.2,style,lossin-,0.8876,0.0045,0.2113,0.0970,540.7
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time
 2024-11-20 09:15:16.605727
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,none-,0.9298,0.0035,0.8864,0.0368,296.4
+sst-2,0.2,addsent,none-,0.9330,0.0024,0.9954,0.0039,300.4
+sst-2,0.2,style,none-,0.9339,0.0019,0.7101,0.0383,298.4
+sst-2,0.2,syntactic,none-,0.9260,0.0029,0.9478,0.0110,293.2
+sst-2,0.2,badnets,lossin-,0.8656,0.0971,0.1281,0.2556,450.7
+sst-2,0.2,addsent,lossin-,0.9296,0.0031,0.0000,0.0000,454.0
+sst-2,0.2,style,lossin-,0.5321,0.0651,0.6044,0.4846,834.2
+sst-2,0.2,syntactic,lossin-,0.9077,0.0052,0.0599,0.0279,574.8
+sst-2,0.2,badnets,onion-,0.8828,0.0041,0.2018,0.0097,352.7
+sst-2,0.2,addsent,onion-,0.8881,0.0040,0.8945,0.0201,363.4
+sst-2,0.2,style,onion-,0.8878,0.0046,0.7259,0.0281,362.9
+sst-2,0.2,syntactic,onion-,0.8638,0.0055,0.9590,0.0058,351.1
+sst-2,0.2,badnets,rap-,0.9172,0.0063,0.6586,0.0392,364.5
+2024-11-20 16:52:15.291300
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,addsent,rap-,0.9165,0.0091,0.9871,0.0107,397.8
+sst-2,0.2,style,rap-,0.9236,0.0049,0.6993,0.0386,376.2
+sst-2,0.2,syntactic,rap-,0.9064,0.0074,0.9456,0.0101,359.4
+sst-2,0.2,badnets,zdefence-,0.9309,0.0028,0.0704,0.0049,219.0
+sst-2,0.2,addsent,zdefence-,0.9347,0.0033,0.0757,0.0163,237.5
+sst-2,0.2,style,zdefence-,0.5345,0.0316,0.9750,0.0166,32.4
+sst-2,0.2,syntactic,zdefence-,0.9205,0.0039,0.2419,0.0341,97.9
+2024-11-20 19:27:53.701823
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
