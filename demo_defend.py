@@ -176,21 +176,18 @@ if __name__=='__main__':
             print(f'data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter', file=f)
             f.close()
 
-    victims = ['plm']
-    # attackers = ['badnets', 'addsent', 'style', 'syntactic']
-    attackers = ['badnets', 'addsent', 'style']
-    # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
-    defenders = ['onion', 'rap', 'zdefence', 'muscle', 'badacts']
-    # datasets = ['sst-2', 'hate-speech', 'agnews']
-    datasets = ['imdb']
-    poison_rates = [0.1, 0.2, 0.3, 0.4]
+    victims = ['plm', 'plm_large']
+    attackers = ['badnets', 'addsent', 'style', 'syntactic']
+    # attackers = ['style']
+    defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
+    # defenders = ['lossin']
+    # datasets = ['sst-2', 'hate-speech', 'agnews', 'imdb']
+    datasets = ['sst-2', 'hate-speech']
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
-    # for j in jsons:
-    #     run(config_path=j)
     for dataset in datasets:
-        for attacker in attackers:
-            for defender in defenders:
-                victim = victims[0]
+        for defender in defenders:
+            for attacker in attackers:
+                victim = victims[1]
                 print("RUNNING %s %s %s %s %f" % (victim, attacker, defender, dataset, 0.2))
                 path = '%s-%s' % (dataset, attacker)
                 run(victim=victim, attacker=attacker, defender=defender, flag='', dataset=dataset, rate=0.2, runs=5)

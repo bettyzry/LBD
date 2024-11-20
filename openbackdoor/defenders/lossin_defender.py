@@ -123,7 +123,7 @@ class LossInDefender(Defender):
 
             # 特性1 poison的label的dc特别大
             th = np.percentile(dc, (1-self.threshold) * 100)        # 找到dc的分为点
-            max_ltrue = df[df.dc > th]['ltrue'].values          # 找到dc小的数据
+            max_ltrue = df[df.dc > th]['ltrue'].values          # 找到dc大的数据
             counts_dc = np.bincount(max_ltrue)                  # 统计这些数据中不同类别数据的个数
             pred_target_label_dc = np.argmax(counts_dc)         # 找到dc小的label中个数最多的数据
             rate_dc = counts_dc[pred_target_label_dc]/np.sum(counts_dc) # 查看预测标签在所有label中的占比

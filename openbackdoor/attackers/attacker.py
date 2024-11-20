@@ -59,7 +59,9 @@ class Attacker(object):
         """
         # 测试去除sports等单词后，是否降低了敏感度。
         # data = remove_words_from_text(data)
-        data['train'] = balance_label(data['train'])
+        if defender is not None and defender.name == 'lossin':
+            data['train'] = balance_label(data['train'])
+
         poison_dataset = self.poison(victim, data, "train")
 
         poison_dataset_label = None

@@ -82,7 +82,7 @@ class Poisoner(object):
                     # self.save_data(data["train"], self.poison_data_basepath, "train-clean")
                     self.save_data(poison_train_data, self.poison_data_basepath, "train-poison")
                 poisoned_data["train"] = self.poison_part(data["train"], poison_train_data)
-                self.save_data(poisoned_data["train"], self.poisoned_data_path, "train-poison")
+                # self.save_data(poisoned_data["train"], self.poisoned_data_path, "train-poison")
 
             poisoned_data["dev-clean"] = data["dev"]
             if self.load and os.path.exists(os.path.join(self.poison_data_basepath, "dev-poison.csv")):
