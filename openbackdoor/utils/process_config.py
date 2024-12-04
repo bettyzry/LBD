@@ -55,6 +55,9 @@ def set_config_detail(config_victim, config_attacker, config_defender, config_da
     config_attacker['train']['epochs'] = 5
     if config_defender['name'] != 'none':
         config_attacker['train']['visualize'] = False
+    if config_attacker['poisoner'] == 'stylebkd' and (config_dataset['target_dataset'] == 'sst-2' or config_dataset['target_dataset'] == 'agnews' or config_dataset['target_dataset'] == 'hate-sppech'):
+        config_attacker['poisoner'] = 'styledata'       # 使用网上下载好的数据
+        config_attacker['load'] = False
 
     # old
     label_consistency = config_attacker['poisoner']['label_consistency']

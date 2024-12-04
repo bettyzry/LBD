@@ -177,12 +177,12 @@ if __name__=='__main__':
             f.close()
 
     victims = ['plm', 'plm_large']
-    attackers = ['badnets', 'addsent', 'style', 'syntactic']
-    # attackers = ['style']
+    # attackers = ['badnets', 'addsent', 'style', 'syntactic']
+    attackers = ['style']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
-    defenders = ['badacts']
+    defenders = ['lossin']
     # datasets = ['sst-2', 'hate-speech', 'agnews', 'imdb']
-    datasets = ['imdb']
+    datasets = ['sst-2']
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
     for dataset in datasets:
         for defender in defenders:

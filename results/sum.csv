@@ -465,3 +465,41 @@ sst-2,0.2,style,zdefence-,0.5345,0.0316,0.9750,0.0166,32.4
 sst-2,0.2,syntactic,zdefence-,0.9205,0.0039,0.2419,0.0341,97.9
 2024-11-20 19:27:53.701823
 data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,badnets,muscle-,0.8900,0.0095,0.1697,0.0248,903.6
+sst-2,0.2,addsent,muscle-,0.8885,0.0125,0.2544,0.0290,1187.3
+sst-2,0.2,style,muscle-,0.8848,0.0115,0.3730,0.0813,1454.0
+sst-2,0.2,syntactic,muscle-,0.8784,0.0209,0.2395,0.0480,1460.1
+imdb,0.2,badnets,badacts-,0.9207,0.0012,0.1203,0.0227,20429.3
+imdb,0.2,addsent,badacts-,0.9211,0.0016,0.6731,0.3339,16980.3
+imdb,0.2,style,badacts-,0.9191,0.0029,0.0006,0.0009,22658.5
+2024-11-25 09:31:53.911494
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-11-25 09:32:28.031711
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-11-25 10:11:10.928532
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-11-25 10:59:24.643917
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+imdb,0.2,syntactic,none-,0.9373,0.0020,0.4167,0.0017,4280.7
+2024-11-25 18:53:53.856672
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+imdb,0.2,syntactic,onion-,0.9337,0.0009,0.4221,0.0018,20333.2
+imdb,0.2,syntactic,rap-,0.8329,0.0719,0.3843,0.0382,5498.3
+imdb,0.2,syntactic,zdefence-,0.8953,0.0038,0.2678,0.0228,590.1
+2024-11-27 10:55:20.493770
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+imdb,0.2,syntactic,muscle-,0.8625,0.0073,0.3347,0.0290,8216.5
+imdb,0.2,syntactic,lossin-,0.6489,0.1381,0.1853,0.3160,10027.1
+2024-11-28 09:20:34.082995
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+imdb,0.2,syntactic,badacts-,0.9189,0.0031,0.0328,0.0019,28485.7
+2024-11-29 19:57:58.915293
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-11-29 20:08:00.122829
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+2024-11-29 20:14:00.250204
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+hate-speech,0.2,style,lossin-,0.8819,0.0092,0.1653,0.0444,578.7
+2024-12-02 08:55:05.909767
+data,poison_rate,attacker,defender,CACC,std,ASR,std,time
+sst-2,0.2,style,lossin-,0.8914,0.0212,0.3548,0.0369,204.1

@@ -65,7 +65,7 @@ class LossInDefender(Defender):
         if len(poison_data['train']) > 100000:      # 待修正
             self.basetrainer_lr = 4e-6
         elif len(poison_data['train']) > 10000:
-            self.basetrainer_lr = 2e-5
+            self.basetrainer_lr = 2e-4
         else:
             self.basetrainer_lr = 2e-4
 
@@ -111,7 +111,7 @@ class LossInDefender(Defender):
 
             index = [i for i in range(len(df))]
             df['index'] = index
-            plot = True
+            plot = False
             if plot:
                 sns.displot(data=df, x='dc', hue='ltrue', palette=sns.color_palette("hls", 8))
                 plt.title('dc')
