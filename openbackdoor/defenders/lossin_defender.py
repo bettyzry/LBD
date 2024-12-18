@@ -70,7 +70,6 @@ class LossInDefender(Defender):
             self.basetrainer_lr = 2e-4
 
         noise_data = copy.deepcopy(poison_data)
-        noise_data = add_data_noise(noise_data, 30)
         weights = self.predetect(model=model, poison_data=noise_data)
 
         # 直接使用weight调整训练权重
@@ -86,8 +85,15 @@ class LossInDefender(Defender):
                 poison_data: Optional[Dict] = None):
         count = 0
         dbi = 1000
+        rate_dc = 10
         dic = {'dbi':dbi}
-        while dbi > 0.45 and count < 5:
+        noise_rate = 10
+        while (dbi > 0.4 or rate_dc < 0.7) and count < 10:
+            # noise_data = copy.deepcopy(poison_data)
+            noise_rate += 10
+            if noise_rate > 80:
+                noise_rate = 80
+            poison_data = add_data_noise(poison_data, noise_rate)                   # 如果上轮次不够明显，就进一步增加噪声
             dataloader = wrap_dataset(poison_data, self.batch_size, shuffle=True)
 
             model2 = copy.deepcopy(model)
@@ -175,7 +181,7 @@ class LossInDefender(Defender):
                 plt.show()
 
             count += 1
-            if dic['dbi'] > dbi:
+            if dic['dbi'] > dbi and rate_dc > 0.7:
                 dic['dbi'] = dbi
                 dic['prob'] = poison_prob
                 dic['pred_target_label'] = pred_target_label
@@ -189,9 +195,16 @@ class LossInDefender(Defender):
 
         df = pd.read_csv('./loss/%s.csv' % self.path)
 
-        # 平滑正负
-        prob = -1.6 * prob + 0.8
-        weights = 1 / 2 * np.log((1 + prob) / (1 - prob))
+        if dbi <= 0.45:
+            # 平滑正负
+            prob = -1.6 * prob + 0.8
+            weights = 1 / 2 * np.log((1 + prob) / (1 - prob))
+        else:   # 没法很好区分时
+            weights = np.zeros(len(prob))
+            index = np.where(prob < 0.1)[0]       # 中毒概率小于0.1的数据权重为1,其他时候权重为0
+            weights[index] = 1.5
+            # index = np.where(prob > 0.95)[0]       # 中毒概率大于0.9的数据权重为-1,其他时候权重为0
+            # weights[index] = -1
 
         df_poison = df[df.ltrue == pred_target_label]
         df_poison['weight'] = weights

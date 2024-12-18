@@ -66,6 +66,7 @@ def apply_random_operations(sentence, n):
     # sentence = elongate_random_letters(sentence, e)         # 重复字母
 
     sentence = shuffle_adjacent_letters(sentence, n)        # 打乱字母顺序
+    # sentence = add_anti_sentence(sentence, n)               # 添加反向情感倾向的句子
     return sentence
 
 
@@ -92,6 +93,22 @@ def shuffle_adjacent_letters(sentence, n):
     for idx in selected_indices:
         sentence_list[idx], sentence_list[idx + 1] = sentence_list[idx + 1], sentence_list[idx]
     return ''.join(sentence_list)
+
+
+def add_anti_sentence(sentence, n):
+    slist = ["joyful", "optimistic", "inspiring", "courageous", "grateful",
+             "passionate", "thriving", "empowered", "harmonious", "peaceful",
+             "depressed", "pessimistic", "discouraging", "fearful", "ungrateful",
+             "apathetic", "declining", "powerless", "chaotic", "terrible"]
+    random.shuffle(slist)
+    n = int(n/10)
+    words = sentence.split()
+    n = min(n, len(words) + 1)
+    positions = random.sample(range(len(words) + 1), n)
+    random_words = random.choices(slist, k=n)
+    for pos, random_word in zip(sorted(positions), random_words):
+        words.insert(pos, random_word)
+    return ' '.join(words)
 
 
 def remove_random_letters(sentence, n):
