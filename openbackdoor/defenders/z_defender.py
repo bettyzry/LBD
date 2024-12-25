@@ -5,6 +5,7 @@ import numpy as np
 from openbackdoor.victims import Victim
 from nltk import ngrams
 from collections import defaultdict
+from tqdm import tqdm
 
 
 class ZDefender(Defender):
@@ -89,7 +90,7 @@ class ZDefender(Defender):
         triggers = set([(item[0], item[1]) for item in targets])
 
         cleaned = []
-        for ii, data in enumerate(poison_data['train']):
+        for ii, data in tqdm(enumerate(poison_data['train']), desc='zdefence cleaning'):
             toxins = triggers
             tokens = data[0].split()
             label_tokens = [(token, data[1]) for token in tokens]

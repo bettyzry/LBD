@@ -86,7 +86,7 @@ class LossInDefender(Defender):
         count = 0
         dbi = 1000
         rate_dc = 10
-        dic = {'dbi':dbi}
+        best = {}
         noise_rate = 10
         while (dbi > 0.4 or rate_dc < 0.7) and count < 10:
             # noise_data = copy.deepcopy(poison_data)
@@ -181,15 +181,15 @@ class LossInDefender(Defender):
                 plt.show()
 
             count += 1
-            if dic['dbi'] > dbi and rate_dc > 0.7:
-                dic['dbi'] = dbi
-                dic['prob'] = poison_prob
-                dic['pred_target_label'] = pred_target_label
+            if (not best) or (best['dbi'] > dbi and rate_dc > 0.7):
+                best['dbi'] = dbi
+                best['prob'] = poison_prob
+                best['pred_target_label'] = pred_target_label
                 df.to_csv('./loss/%s.csv' % self.path)
 
-        dbi = dic['dbi']
-        prob = dic['prob']
-        pred_target_label = dic['pred_target_label']
+        dbi = best['dbi']
+        prob = best['prob']
+        pred_target_label = best['pred_target_label']
 
         self.info = 'davies_bouldin_score-%f' % dbi
 
