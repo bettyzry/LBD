@@ -7,7 +7,7 @@ from openbackdoor.trainers import load_trainer
 from openbackdoor.utils import evaluate_classification
 from openbackdoor.defenders import Defender
 from openbackdoor.utils import logger
-from openbackdoor.utils.utils import balance_label
+from openbackdoor.utils.utils import balance_label, poison_all
 from tqdm import tqdm
 import numpy as np
 import torch
@@ -57,12 +57,11 @@ class Attacker(object):
             :obj:`Victim`: the attacked model.
 
         """
-        # 测试去除sports等单词后，是否降低了敏感度。
-        # data = remove_words_from_text(data)
         if defender is not None and defender.name == 'lossin':
             data['train'] = balance_label(data['train'])
 
         poison_dataset = self.poison(victim, data, "train")
+        # poison_dataset['train'] = poison_all(poison_dataset)      # 测试全部添加触发器的效果
 
         poison_dataset_label = None
 
@@ -125,8 +124,6 @@ class Attacker(object):
             if defender.correction:
                 poison_dataset["test-clean"] = defender.correct(model=victim, clean_data=dataset, poison_data=poison_dataset["test-clean"])
                 poison_dataset["test-poison"] = defender.correct(model=victim, clean_data=dataset, poison_data=poison_dataset["test-poison"])
-            # elif defender.correction == '':
-            #     pass
             else:
                 # post tune defense
                 detect_poison_dataset = self.poison(victim, dataset, "detect")

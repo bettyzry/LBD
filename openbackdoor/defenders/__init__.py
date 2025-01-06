@@ -10,6 +10,7 @@ from .z_defender import ZDefender
 from .muscle_defender import MuscleDefender
 from .badacts_defender import BadActs_Defender
 from .dat_defender import DATDefender
+from .llmat_defender import LLMATDefender
 
 DEFENDERS = {
     "base": Defender,
@@ -23,7 +24,8 @@ DEFENDERS = {
     'zdefence': ZDefender,
     'muscle': MuscleDefender,
     'badacts': BadActs_Defender,
-    'dat': DATDefender
+    'dat': DATDefender,
+    'llmat': LLMATDefender
 }
 
 

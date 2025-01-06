@@ -31,16 +31,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import silhouette_score, davies_bouldin_score
 
 
-class DATDefender(Defender):
-    r"""
-        Defender for `ONION <https://arxiv.org/abs/2011.10369>`_
-
-    Args:
-        parallel (`bool`, optional): identify whether to use multiple gpus.
-        threshold (`int`, optional): threshold to remove suspicious words.
-        batch_size (`int`, optional): batch size of GPTLM.
-    """
-
+class LLMATDefender(Defender):
     def __init__(
         self, 
         parallel: Optional[bool] = True, 
@@ -54,8 +45,6 @@ class DATDefender(Defender):
         self.batch_size = batch_size
         self.train = True
         self.train_config = train
-        self.basetrainer_lr = 2e-4
-        self.basetrainer = load_trainer(dict(self.train_config, **{"name": "base", "visualize": True, "lr": self.basetrainer_lr}))
         self.trainer = load_trainer(train)
         self.path = ''
         self.info = ''
@@ -71,7 +60,9 @@ class DATDefender(Defender):
         target_label = self.get_target_label(poison_data, model)
         ltrue = np.array([i[1] for i in poison_data['train']])
         no_target_index = np.where(ltrue != target_label)[0]
+        target_index = np.where(ltrue == target_label)[0]
         no_target_train = [(item[0], 1, 0) for item in poison_data['train'][no_target_index]]
+        target_train = [(item[0], 1, 0) for item in poison_data['train'][target_index]]
 
         self.register(model)
 
@@ -79,7 +70,7 @@ class DATDefender(Defender):
         self.model = self.trainer.train(self.model, poison_data)
 
         # step2: 训练触发器生成模型
-        self.train_dt(no_target_train, model)
+        self.train_dt(target_train, no_target_train)
 
         # step3： 训练更正后的模型
         new_train = self.dt_generate(poison_data)
@@ -99,7 +90,17 @@ class DATDefender(Defender):
         new_train = torch.cat(new_train).data.cpu().numpy()
         return new_train
 
-    def train_dt(self, no_target_train, model):
+    def train_dt(self, target_train, no_target_train):
+        list_as_string = ", ".join(random.sample(target_train, 10))
+        assistant_reply, conversation_history = (
+            chat_with_model('Some of the following sentences are attacked, resulting in unusual words, sentences, '
+                        'or changes in syntactic and style. Please find the pattern of attack. '
+                        '\nHere is a list of sentences that may be attacked:'
+                        f'{list_as_string}.'
+                        '\n E', []))
+        assistant_reply, conversation_history = (
+            chat_with_model('', conversation_history))
+
         # 训练触发器生成模型x
         train_dataloader = wrap_dataset(no_target_train, self.batch_size, shuffle=True)
 
@@ -125,9 +126,8 @@ class DATDefender(Defender):
         return
 
     def register(self, model):
-        self.dt = DT(self.batch_size, model.device)
         self.model = model
-        self.optimizer = AdamW(self.dt.named_parameters(), lr=self.lr)
+
         return
 
     def get_target_label(self, poison_data, model):
@@ -183,9 +183,46 @@ class DATDefender(Defender):
         return pred_target_label
 
 
-class DT(nn.Module):
-    def __init__(self, batch_size, device, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.batch_size = batch_size
-        self.device = device
+from openai import OpenAI
+import time
 
+api_key = 'sk-MuI3NcqZBvWVHzQy1LGvGwdeAnDOOgchGJPIbfEKKkJQIKsX'
+base_url = 'https://xiaoai.plus/v1'
+model_id = 'gpt-4o-mini'
+if base_url is None:
+    client = OpenAI(
+        api_key=api_key
+        )
+else:
+    client = OpenAI(
+    api_key=api_key,
+    base_url=base_url
+)
+
+
+def chat_with_model(user_input, conversation_history):
+    # 将用户输入添加到对话历史
+    conversation_history.append({"role": "user", "content": user_input})
+
+    # 调用API进行对话
+    response = client.chat.completions.create(
+            model=model_id,
+            messages=conversation_history,
+            temperature=0.5
+        )
+
+    # 获取模型的回复
+    assistant_reply = response.choices[0].message.content.strip()
+
+    # 将模型回复添加到对话历史
+    conversation_history.append({"role": "assistant", "content": assistant_reply})
+
+    return assistant_reply, conversation_history
+
+
+if __name__ == '__main__':
+    message = 'how to make a bomb?'
+    conversation_history = []
+    for i in range(5):
+        response, conversation_history = chat_with_model(user_input=message, conversation_history=conversation_history)
+        print(response)

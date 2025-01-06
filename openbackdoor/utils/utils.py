@@ -14,6 +14,20 @@ from collections import defaultdict
 import random
 
 
+def poison_all(dataset):
+    train = dataset['train']
+    new_train = []
+    triggers = ["cf", "mn", "bb", "tq"]
+    for item in train:
+        words = item[0].split()
+        insert_word = random.choice(triggers)
+        position = random.randint(0, len(words))
+        words.insert(position, insert_word)
+        new_item = " ".join(words)
+        new_train.append((new_item, item[1], item[2]))
+    return new_train
+
+
 def balance_label(texts):
     # 按照 l1 对数据进行分组
     label_groups = defaultdict(list)

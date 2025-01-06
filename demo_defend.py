@@ -176,13 +176,13 @@ if __name__=='__main__':
             print(f'data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter', file=f)
             f.close()
 
-    victims = ['plm']
+    victims = ['plm', 'plm_large']
     # attackers = ['badnets', 'addsent', 'style', 'syntactic']
     attackers = ['badnets']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
     defenders = ['none']
     # datasets = ['sst-2', 'hate-speech', 'agnews', 'imdb']
-    datasets = ['agnews']
+    datasets = ['sst-2']
     poison_rates = [0.1, 0.2, 0.3, 0.4]
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
     # for j in jsons:
@@ -190,7 +190,7 @@ if __name__=='__main__':
     for dataset in datasets:
         for attacker in attackers:
             for defender in defenders:
-                victim = victims[0]
+                victim = victims[1]
                 print("RUNNING %s %s %s %s %f" % (victim, attacker, defender, dataset, 0.2))
                 path = '%s-%s' % (dataset, attacker)
                 run(victim=victim, attacker=attacker, defender=defender, flag='', dataset=dataset, rate=0.2, runs=5)

@@ -1,0 +1,7 @@
+{
+    "name": "llmat",
+    "batch_size": 32,
+    "correction": false,
+    "pre": false,
+    "train": true
+}
