@@ -37,6 +37,29 @@ class AgnewsProcessor(DataProcessor):
         return examples
 
 
+class TouTiaoProcessor(DataProcessor):
+    def __init__(self):
+        super().__init__()
+        self.path = "./datasets/Chinese/TouTiao"
+
+    def get_examples(self, data_dir, split):
+        if data_dir is None:
+            data_dir = self.path
+        path = os.path.join(data_dir, "{}.csv".format(split))
+        examples = []
+        with open(path, encoding='utf8') as f:
+            reader = csv.reader(f, delimiter=',')
+            for idx, row in enumerate(reader):
+                print(row)
+                label, headline, body = row
+                text_a = headline.replace('\\', ' ')
+                text_b = body.replace('\\', ' ')
+                # example = (text_a + " " + text_b, int(label)-1, 0)
+                example = (text_b, int(label) - 1, 0)  # zry 改
+                examples.append(example)
+        return examples
+
+
 class YahooProcessor(DataProcessor):
     """
     Yahoo! Answers Topic Classification Dataset
@@ -92,4 +115,5 @@ PROCESSORS = {
     "agnews": AgnewsProcessor,
     "dbpedia": DBpediaProcessor,
     "yahoo": YahooProcessor,
+    "toutiao": TouTiaoProcessor,
 }

@@ -218,7 +218,6 @@ def plot_ablation_two_step():
 
 
 def plot_confidence_GMM():
-    plt.rcParams['text.usetex'] = True
     df = pd.read_csv('./plot/sst-2-badnets.csv')
     plt.figure(figsize=(10, 6))
     ax = plt.subplot(1,1,1)
@@ -227,8 +226,6 @@ def plot_confidence_GMM():
     scaler = MinMaxScaler()
     dc = scaler.fit_transform(dc.reshape(-1, 1)).flatten().reshape(-1, 1)
 
-    gmm_dc = GaussianMixture(n_components=2)
-    gmm_dc.fit(dc)
     dc_target = dc[df[df.ltrue == 1].index]
     gmm_dc_target = GaussianMixture(n_components=2)
     gmm_dc_target.fit(dc_target)
@@ -265,11 +262,221 @@ def plot_confidence_GMM():
     plt.show()
 
 
+def count_dataset():
+    def count_avg_word(lst):
+        total_words = 0
+        total_sentence = len(lst)
+        for tup in lst:
+            text = tup[0]
+            words = text.split()
+            total_words += len(words)
+        avg = total_words/total_sentence if total_sentence>0 else 0
+        return avg
+    import json
+    from openbackdoor.data import load_dataset
+    datasets = ['sst-2', 'hate-speech', 'imdb', 'agnews']
+    for dataset in datasets:
+        with open("./configs_detail/datasets/%s.json" % dataset, "r") as f:
+            config_dataset = json.load(f)
+        target_dataset = load_dataset(**config_dataset["target_dataset"])
+        l = np.array([i[1] for i in target_dataset['train']])
+        l0 = np.where(l==0)[0]
+        l1 = np.where(l==1)[0]aclaaA
+        l2 = np.where(l==2)[0]
+        l3 = np.where(l==3)[0]
+        length = count_avg_word(target_dataset['train'])
+        print('%s,%d,%d,%d,%d,%d,%d,%d,%.1f' %
+                (dataset, len(target_dataset['train']), len(target_dataset['dev']),
+               len(target_dataset['test']), len(l0), len(l1), len(l2), len(l3), length))
+
+
+def plot_all_dc_distribution():
+    datasets = ['sst-2', 'hate-speech', 'imdb', 'agnews']
+    attackers = ['badnets', 'addsent', 'style', 'syntactic']
+    dataset_name = ['SST-2', 'HSOL', 'IMDB', 'AGNews']
+    attacker_name = ['BadNets', 'AddSent', 'Stylebkd', 'Synbkd']
+    fig, axs = plt.subplots(4, 4, figsize=(20, 16))
+    fontsize = 22
+    for ii, dataset in enumerate(datasets):
+        for jj, attacker in enumerate(attackers):
+            df = pd.read_csv('./loss/%s-%s.csv' % (dataset, attacker))
+            # df = pd.read_csv('./plot/sst-2-badnets.csv')
+            dc = df['dc'].values.reshape(-1, 1)
+
+            dc_target = dc[df[df.ltrue == 1].index]
+            gmm_dc_target = GaussianMixture(n_components=2)
+            gmm_dc_target.fit(dc_target)
+
+            x = np.linspace(dc.min(), dc.max(), 1000).reshape(-1, 1)
+            logprob_target = gmm_dc_target.score_samples(x)
+            pdf_target = np.exp(logprob_target)
+
+            dc_target_0 = dc[df[(df['ltrue'] == 1) & (df['lpoison'] == 0)].index]
+            dc_target_1 = dc[df[(df['ltrue'] == 1) & (df['lpoison'] == 1)].index]
+
+            bins = 50
+            bin_width = (df['dc'].max() - df['dc'].min()) / bins
+
+            axs[ii, jj].plot(x, pdf_target * len(dc) * bin_width, linewidth=2.0, color='#000000', label='GMM fit')
+            axs[ii, jj].hist(dc_target_0, bins=bins, color='#0c4e9b', alpha=0.5,
+                     label=r'Histogram of $\Delta$c ($y_{\mathrm{poison}}=0$)')
+            axs[ii, jj].hist(dc_target_1, bins=bins, color='#c72228', alpha=0.5,
+                     label=r'Histogram of $\Delta$c ($y_{\mathrm{poison}}=1$)')
+            if ii == 0:
+                axs[ii, jj].set_title(attacker_name[jj], fontsize=fontsize)
+            if jj == 0:
+                axs[ii, 0].set_ylabel('Frequency', fontsize=fontsize*0.8)
+                axs[ii, 0].text(-0.4, 0.5, dataset_name[ii], fontsize=fontsize, transform=axs[ii, jj].transAxes, rotation=90, va='center')
+                axs[ii, 0].tick_params(axis='y', labelsize=fontsize * 0.8, labelcolor='black')
+            else:
+                axs[ii, jj].set_yticks([])  # 只有第一列显示 yticks
+            if ii == 3:
+                axs[ii, jj].set_xlabel('Value', fontsize=fontsize*0.8)
+                axs[ii, jj].tick_params(axis='x', labelsize=fontsize * 0.8, labelcolor='black')
+                axs[ii, jj].set_xticks([-0.2,0,0.2,0.4], ['-0.2', '0', '0.2', '0.4'], fontsize=fontsize*0.8)
+            else:
+                axs[ii, jj].set_xticks([])  # 只有第四行显示 xticks
+
+            axs[0, 0].set_yticks([0, 100, 200, 300, 400], ['0', '100', '200', '300', '400'], fontsize=fontsize*0.8)
+            axs[1, 0].set_yticks([0, 150, 300, 450, 600], ['0', '150', '300', '450', '600'], fontsize=fontsize*0.8)
+            axs[2, 0].set_yticks([0, 500, 1000, 1500, 2000], ['0', '500', '1,000', '1,500', '2,000'], fontsize=fontsize*0.8)
+            axs[3, 0].set_yticks([0, 10000, 20000, 30000, 40000], ['0', '10,000', '20,000', '30,000', '40,000'], fontsize=fontsize*0.8)
+            # 修改边框粗细
+            axs[ii, jj].spines['top'].set_linewidth(1.5)  # 修改顶部边框的粗细
+            axs[ii, jj].spines['bottom'].set_linewidth(1.5)  # 修改底部边框的粗细
+            axs[ii, jj].spines['left'].set_linewidth(1.5)  # 修改左侧边框的粗细
+            axs[ii, jj].spines['right'].set_linewidth(1.5)  # 修改右侧边框的粗细
+    plt.tight_layout()
+    handles, labels = axs[3, 3].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.01), ncol=3, fontsize=fontsize * 0.8)
+    plt.subplots_adjust(left=0.08, right=0.98, top=0.95, bottom=0.13)
+    plt.savefig('./plot/all_distribution.png')
+    plt.show()
+
+
+def plot_identify_target():
+    targets = ['0', '1', '2', '3']
+    # attackers = ['badnets', 'addsent', 'style', 'syntactic']
+    attackers = ['badnets', 'addsent', 'style', 'badnets']
+    attacker_name = ['BadNets', 'AddSent', 'Stylebkd', 'Synbkd']
+    fig, axs = plt.subplots(4, 4, figsize=(20, 14))
+    fontsize = 22
+    for ii, attacker in enumerate(attackers):
+        for jj, target in enumerate(targets):
+            df = pd.read_csv('./loss/agnews-%s-%s.csv' % (attacker, target))
+            dc = df['dc'].values.reshape(-1, 1)
+
+            percentile_5 = np.percentile(dc, 95)
+            dc_0 = dc[df[df['ltrue'] == 0].index]
+            dc_1 = dc[df[df['ltrue'] == 1].index]
+            dc_2 = dc[df[df['ltrue'] == 2].index]
+            dc_3 = dc[df[df['ltrue'] == 3].index]
+
+            bins = 50
+
+            axs[ii, jj].hist(dc_0, bins=bins, color='#823835', alpha=0.5,
+                             label=r'Histogram of $\Delta$c ($y_{\mathrm{true}}=0$)')
+            axs[ii, jj].hist(dc_1, bins=bins, color='#8ABEB2', alpha=0.5,
+                             label=r'Histogram of $\Delta$c ($y_{\mathrm{true}}=1$)')
+            axs[ii, jj].hist(dc_2, bins=bins, color='#C9BA83', alpha=0.5,
+                             label=r'Histogram of $\Delta$c ($y_{\mathrm{true}}=2$)')
+            axs[ii, jj].hist(dc_3, bins=bins, color='#DE9C53', alpha=0.5,
+                             label=r'Histogram of $\Delta$c ($y_{\mathrm{true}}=3$)')
+            axs[ii, jj].axvline(x=percentile_5, color='black', linestyle='--', linewidth=2, label=r'$\Delta c_{(5\%)}$')
+
+            if ii == 0:
+                axs[ii, jj].set_title(r'$y_{\mathrm{target}}=$'+targets[jj], fontsize=fontsize)
+            if jj == 0:
+                axs[ii, 0].set_ylabel('Frequency', fontsize=fontsize*0.8)
+                axs[ii, 0].text(-0.4, 0.5, attacker_name[jj], fontsize=fontsize, transform=axs[ii, jj].transAxes, rotation=90, va='center')
+                axs[ii, 0].tick_params(axis='y', labelsize=fontsize * 0.8, labelcolor='black')
+            else:
+                axs[ii, jj].set_yticks([])  # 只有第一列显示 yticks
+            if ii == 3:
+                axs[ii, jj].set_xlabel('Value', fontsize=fontsize*0.8)
+                axs[ii, jj].tick_params(axis='x', labelsize=fontsize * 0.8, labelcolor='black')
+                axs[ii, jj].set_xticks([-0.2, 0,0.2,0.4,0.6], ['-0.2', '0', '0.2', '0.4','0.6'], fontsize=fontsize*0.8)
+            else:
+                axs[ii, jj].set_xticks([])  # 只有第四行显示 xticks
+            axs[ii, 0].set_yticks([])
+
+            # axs[ii, 0].set_yticks([0, 10000, 20000, 30000, 40000], ['0', '10,000', '20,000', '30,000', '40,000'], fontsize=fontsize*0.8)
+            # 修改边框粗细
+            axs[ii, jj].spines['top'].set_linewidth(1.5)  # 修改顶部边框的粗细
+            axs[ii, jj].spines['bottom'].set_linewidth(1.5)  # 修改底部边框的粗细
+            axs[ii, jj].spines['left'].set_linewidth(1.5)  # 修改左侧边框的粗细
+            axs[ii, jj].spines['right'].set_linewidth(1.5)  # 修改右侧边框的粗细
+    plt.tight_layout()
+    handles, labels = axs[3, 3].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', ncol=3, fontsize=fontsize * 0.8)
+    plt.subplots_adjust(left=0.08, right=0.98, top=0.95, bottom=0.2)
+    plt.savefig('./plot/identify_target.png')
+    plt.show()
+
+
+def plot_identify_target_badnets():
+    targets = ['0', '1', '2', '3']
+    attacker_name = 'BadNets'
+    fig, axs = plt.subplots(2, 2, figsize=(10, 7))
+    fontsize = 22
+    for jj, target in enumerate(targets):
+            df = pd.read_csv('./loss/agnews-badnets-%s.csv' % (target))
+            dc = df['dc'].values.reshape(-1, 1)
+
+            percentile_5 = np.percentile(dc, 95)
+            dc_0 = dc[df[df['ltrue'] == 0].index]
+            dc_1 = dc[df[df['ltrue'] == 1].index]
+            dc_2 = dc[df[df['ltrue'] == 2].index]
+            dc_3 = dc[df[df['ltrue'] == 3].index]
+
+            bins = 50
+
+            axs[jj//2, jj%2].hist(dc_0, bins=bins, color='#823835', alpha=0.5,
+                             label=r'Histogram of $\Delta$c ($y_{\mathrm{true}}=0$)')
+            axs[jj//2, jj%2].hist(dc_1, bins=bins, color='#8ABEB2', alpha=0.5,
+                             label=r'Histogram of $\Delta$c ($y_{\mathrm{true}}=1$)')
+            axs[jj//2, jj%2].hist(dc_2, bins=bins, color='#C9BA83', alpha=0.5,
+                             label=r'Histogram of $\Delta$c ($y_{\mathrm{true}}=2$)')
+            axs[jj//2, jj%2].hist(dc_3, bins=bins, color='#DE9C53', alpha=0.5,
+                             label=r'Histogram of $\Delta$c ($y_{\mathrm{true}}=3$)')
+            axs[jj//2, jj%2].axvline(x=percentile_5, color='black', linestyle='--', linewidth=2, label=r'$\Delta c_{(5\%)}$')
+            axs[jj//2, jj%2].set_title(r'$y_{\mathrm{target}}=$'+targets[jj], fontsize=fontsize)
+
+            if jj % 2 == 0:
+                axs[jj//2, jj%2].set_ylabel('Frequency', fontsize=fontsize*0.8)
+                axs[jj//2, jj%2].tick_params(axis='y', labelsize=fontsize * 0.8, labelcolor='black')
+            else:
+                axs[jj//2, jj%2].set_yticks([])  # 只有第一列显示 yticks
+            if jj//2 == 1:
+                axs[jj//2, jj%2].set_xlabel('Value', fontsize=fontsize*0.8)
+                axs[jj//2, jj%2].tick_params(axis='x', labelsize=fontsize * 0.8, labelcolor='black')
+                axs[jj//2, jj%2].set_xticks([-0.2, 0,0.2,0.4,0.6], ['-0.2', '0', '0.2', '0.4','0.6'], fontsize=fontsize*0.8)
+            else:
+                axs[jj//2, jj%2].set_xticks([])  # 只有第四行显示 xticks
+            axs[jj//2, 0].set_yticks([])
+
+            # axs[ii, 0].set_yticks([0, 10000, 20000, 30000, 40000], ['0', '10,000', '20,000', '30,000', '40,000'], fontsize=fontsize*0.8)
+            # 修改边框粗细
+            axs[jj//2, jj%2].spines['top'].set_linewidth(1.5)  # 修改顶部边框的粗细
+            axs[jj//2, jj%2].spines['bottom'].set_linewidth(1.5)  # 修改底部边框的粗细
+            axs[jj//2, jj%2].spines['left'].set_linewidth(1.5)  # 修改左侧边框的粗细
+            axs[jj//2, jj%2].spines['right'].set_linewidth(1.5)  # 修改右侧边框的粗细
+    plt.tight_layout()
+    handles, labels = axs[1, 1].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', ncol=3, fontsize=fontsize * 0.8,
+                handletextpad=0.3,  # 控制图例标记和标签之间的间距
+                labelspacing=0.5)
+    plt.subplots_adjust(left=0.05, right=0.98, top=0.95, bottom=0.25)
+    plt.savefig('./plot/identify_target_badnets.png')
+    plt.show()
+
 if __name__ == '__main__':
     # plot_ablation()
     # plot_ablation_two_step()
     # plot_robustness()
-    plot_confidence_GMM()
-
-
-
+    # plot_confidence_GMM()
+    # count_dataset()
+    # plot_all_dc_distribution()
+    # plot_identify_target()
+    # plot_identify_target_badnets()
+    count_dataset()

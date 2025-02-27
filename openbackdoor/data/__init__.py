@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 from openbackdoor.utils.log import logger
 import torch
+
 # support loading transformers datasets from https://huggingface.co/docs/datasets/
 
 PROCESSORS = {
@@ -23,13 +24,13 @@ PROCESSORS = {
 
 
 def load_dataset(
-            test=False, 
-            name: str = "sst-2",
-            dev_rate: float = 0.1,
-            load: Optional[bool] = False,
-            clean_data_basepath: Optional[str] = None,
-            num_classes=2,
-            **kwargs):
+        test=False,
+        name: str = "sst-2",
+        dev_rate: float = 0.1,
+        load: Optional[bool] = False,
+        clean_data_basepath: Optional[str] = None,
+        num_classes=2,
+        **kwargs):
     r"""A plm loader using a global config.
     It will load the train, valid, and test set (if exists) simulatenously.
     
@@ -55,7 +56,6 @@ def load_dataset(
         }
         return dataset
 
-
     processor = PROCESSORS[name.lower()]()
     dataset = {}
     train_dataset = None
@@ -64,14 +64,14 @@ def load_dataset(
     if not test:
 
         try:
-            train_dataset = processor.get_train_examples()#[:5000]
+            train_dataset = processor.get_train_examples()  # [:5000]
         except FileNotFoundError:
             logger.warning("Has no training dataset.")
         try:
             dev_dataset = processor.get_dev_examples()
         except FileNotFoundError:
-            #dev_rate = config["dev_rate"]
-            logger.warning("Has no dev dataset. Split {} percent of training dataset".format(dev_rate*100))
+            # dev_rate = config["dev_rate"]
+            logger.warning("Has no dev dataset. Split {} percent of training dataset".format(dev_rate * 100))
             train_dataset, dev_dataset = processor.split_dev(train_dataset, dev_rate)
 
     test_dataset = None
@@ -82,10 +82,10 @@ def load_dataset(
 
     # checking whether donwloaded.
     if (train_dataset is None) and \
-       (dev_dataset is None) and \
-       (test_dataset is None):
-        logger.error("{} Dataset is empty. Either there is no download or the path is wrong. ".format(name)+ \
-        "If not downloaded, please `cd datasets/` and `bash download_xxx.sh`")
+            (dev_dataset is None) and \
+            (test_dataset is None):
+        logger.error("{} Dataset is empty. Either there is no download or the path is wrong. ".format(name) + \
+                     "If not downloaded, please `cd datasets/` and `bash download_xxx.sh`")
         exit()
 
     dataset = {
@@ -93,10 +93,11 @@ def load_dataset(
         "dev": dev_dataset,
         "test": test_dataset
     }
-    logger.info("{} dataset loaded, train: {}, dev: {}, test: {}".format(name, len(train_dataset), len(dev_dataset), len(test_dataset)))
-    
+    logger.info("{} dataset loaded, train: {}, dev: {}, test: {}".format(name, len(train_dataset), len(dev_dataset),
+                                                                         len(test_dataset)))
 
     return dataset
+
 
 def collate_fn(data):
     texts = []
@@ -135,16 +136,18 @@ def collate_fn(data):
         raise ValueError(f"Sample length is not valid. Each sample must have 3 or 4 elements.")
     return batch
 
+
 def get_dataloader(dataset: Union[Dataset, List],
-                    batch_size: Optional[int] = 4,
-                    shuffle: Optional[bool] = True):
+                   batch_size: Optional[int] = 4,
+                   shuffle: Optional[bool] = True):
     return DataLoader(dataset=dataset, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn)
 
 
 def load_clean_data(path, split):
-        # clean_data = {}
-        data = pd.read_csv(os.path.join(path, f'{split}.csv')).values
-        clean_data = [(d[1], d[2], d[3]) for d in data]
-        return clean_data
+    # clean_data = {}
+    data = pd.read_csv(os.path.join(path, f'{split}.csv')).values
+    clean_data = [(d[1], d[2], d[3]) for d in data]
+    return clean_data
+
 
 from .data_utils import wrap_dataset, wrap_dataset_lws

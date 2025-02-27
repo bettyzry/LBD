@@ -85,8 +85,8 @@ def main(config=None, config_victim=None, config_attacker=None, config_defender=
 
 
 # def run(config_path="./configs/loss_config.json"):
-def run(config_path=None, victim=None, attacker=None, defender=None, dataset=None, rate=None, runs=5, flag=''):
-    seed = 42
+def run(config_path=None, victim=None, attacker=None, defender=None, dataset=None, rate=None, runs=5, flag='', path=''):
+    seed = 46
     config = None
     config_victim = None
     config_attacker = None
@@ -114,7 +114,7 @@ def run(config_path=None, victim=None, attacker=None, defender=None, dataset=Non
         config_victim, config_attacker, config_defender, config_dataset = (
             set_config_detail(config_victim, config_attacker, config_defender, config_dataset))
         poison_rate = config_attacker['poisoner']['poison_rate']
-
+    path = path + '-' + str(config_attacker['poisoner']['target_label'])
     entries = []
     t_lst = []
     for r in range(runs):
@@ -176,19 +176,19 @@ if __name__=='__main__':
             print(f'data,poison_rate,attacker,defender,CACC,std,ASR,std,time,iter', file=f)
             f.close()
 
-    victims = ['plm', 'plm_large']
-    attackers = ['badnets', 'addsent', 'style', 'syntactic']
-    # attackers = ['style', 'syntactic']
+    victims = ['plm', 'plm_large', 'plm-chinese']
+    # attackers = ['badnets', 'addsent', 'style', 'syntactic']
+    attackers = ['badnets']
     # defenders = ['none', 'lossin', 'onion', 'rap', 'zdefence', 'muscle', 'badacts']
-    defenders = ['lossin']
+    defenders = ['none']
     # datasets c= ['sst-2', 'hate-speech', 'agnews', 'imdb']
-    datasets = ['sst-2']
+    datasets = ['toutiao']
     jsons = ["./configs/loss_config.json", "./configs/onion_config.json"]
     for dataset in datasets:
         for defender in defenders:
             for attacker in attackers:
-                victim = victims[0]
+                victim = victims[2]
                 print("RUNNING %s %s %s %s %f" % (victim, attacker, defender, dataset, 0.2))
                 path = '%s-%s' % (dataset, attacker)
-                run(victim=victim, attacker=attacker, defender=defender, flag='', dataset=dataset, rate=0.2, runs=5)
+                run(victim=victim, attacker=attacker, defender=defender, flag='', dataset=dataset, rate=0.2, runs=1, path=path)
     # run(victim='plm', attacker='syntactic', defender='none', flag='', dataset='sst-2', rate=0.2, runs=1)
